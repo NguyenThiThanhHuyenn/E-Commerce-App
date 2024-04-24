@@ -1,0 +1,85 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+  <h1>THỐNG KÊ DOANH THU CỦA CÁC CỬA HÀNG</h1>
+
+  <!-- Thống kê tổng số lượng cửa hàng và số lượng cửa hàng hoạt động -->
+  <h2>Tổng số cửa hàng: {{ store_count }}</h2>
+  <h2>Số cửa hàng hoạt động: {{ active_store_count }}</h2>
+
+  <!-- Bảng hiển thị số lượng sản phẩm hoạt động cho mỗi cửa hàng -->
+  <h3>Danh sách cửa hàng và số lượng sản phẩm hoạt động:</h3>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>Tên Cửa Hàng</th>
+              <th>Số Lượng Sản Phẩm Đang Hoạt Động</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for store in store_active_products %}
+          <tr>
+              <td>{{ store.store_name }}</td>
+              <td>{{ store.active_product_count }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+  <!-- Thống kê doanh thu theo tháng -->
+  <h2>Doanh thu hàng tháng</h2>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>Tháng</th>
+              <th>Tổng Doanh Thu</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for sale in monthly_sales %}
+          <tr>
+              <td>{{ sale.month|date:"Y-m" }}</td>
+              <td>{{ sale.total_sales|floatformat:2 }} VNĐ</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+  <!-- Thống kê doanh thu theo quý -->
+  <h2>Doanh thu hàng quý</h2>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>Quý</th>
+              <th>Tổng Doanh Thu</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for sale in quarterly_sales %}
+          <tr>
+              <td>{{ sale.quarter|date:"Y-Q" }}</td>
+              <td>{{ sale.total_sales|floatformat:2 }} VNĐ</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+  <!-- Thống kê doanh thu hàng năm -->
+  <h2>Doanh thu hàng năm</h2>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>Năm</th>
+              <th>Tổng Doanh Thu</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for sale in yearly_sales %}
+          <tr>
+              <td>{{ sale.year|date:"Y" }}</td>
+              <td>{{ sale.total_sales|floatformat:2 }} VNĐ</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+{% endblock %}

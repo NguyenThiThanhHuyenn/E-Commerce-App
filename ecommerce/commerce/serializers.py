@@ -25,7 +25,7 @@ class StoreSerializer(ModelSerializer):
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'parent']
+        fields = ['id', 'name', 'parent', 'image']
 
 
 class ReviewSerializer(ModelSerializer):

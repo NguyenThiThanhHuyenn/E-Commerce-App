@@ -17,6 +17,12 @@ from django.db.models import Count, Sum, Q, F
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "parent"]
     search_fields = ["parent__name", "name"]
+    readonly_fields = ['category_image']
+
+    def category_image(self, category):
+        if category.image:
+            return mark_safe('<img src="/static/{url}" width="450" height="120" />'.format(url=category.image.name))
+
 
 class StoreAdmin(admin.ModelAdmin):
     list_display = ["id", "store_name", "user", "active", "average_rating"]

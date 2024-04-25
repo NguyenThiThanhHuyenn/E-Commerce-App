@@ -26,15 +26,14 @@ const Home = () => {
     const renderCategoryItem = (category) => {
         return (
             <TouchableOpacity key={category.id} style={Styles.categoryItem}>
-                <Image source={{ uri:'https://www.pythonanywhere.com/user/thanhhy/files/home/thanhhy/E-Commerce-App/ecommerce/static/categoryImage/2024/04/trang_s%E1%BB%A9c_nam.png' }} style={Styles.categoryImage} />
+                <Image source={{ uri: category.image}} style={Styles.categoryImage} />
                 <Text style={Styles.categoryText}>{category.name}</Text>
             </TouchableOpacity>
         );
     };
 
     return (
-        <View style={AppStyles.container}>
-            <Text style={AppStyles.subject}>HOME</Text>
+        <View style={Styles.categoryItem}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 {categories === null ? <ActivityIndicator /> :
                     categories.map(category => renderCategoryItem(category))

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity, Image, FlatList} from "react-native";
+import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity, Image} from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import Styles from "./Styles";
 import API, { endpoints } from "../../configs/API";
@@ -13,6 +13,7 @@ const Home = () => {
             try {
                 let res = await API.get(endpoints['categories']);
                 setCategories(res.data.results);
+                console.log(res.data.results)
             } catch (ex) {
                 console.error(ex);
             }
@@ -25,7 +26,7 @@ const Home = () => {
     const renderCategoryItem = (category) => {
         return (
             <TouchableOpacity key={category.id} style={Styles.categoryItem}>
-                <Image source={{ uri: category.imageUrl }} style={Styles.categoryImage} />
+                <Image source={{ uri:'https://www.pythonanywhere.com/user/thanhhy/files/home/thanhhy/E-Commerce-App/ecommerce/static/categoryImage/2024/04/trang_s%E1%BB%A9c_nam.png' }} style={Styles.categoryImage} />
                 <Text style={Styles.categoryText}>{category.name}</Text>
             </TouchableOpacity>
         );

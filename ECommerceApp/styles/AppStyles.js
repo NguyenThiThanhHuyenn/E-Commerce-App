@@ -1,9 +1,11 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-    }
-})
+        backgroundColor: '#fff', // Thay đổi màu nền thành màu trắng
+        paddingHorizontal: 20, // Thêm padding ngang
+        paddingTop: 20, // Thêm padding đỉnh
+        alignItems: "center",
+    },
+});

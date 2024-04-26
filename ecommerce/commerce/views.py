@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 
 from .models import *
-from .serializers import UserSerializer, CategorySerializer, StoreSerializer, CategorySerializer, ProductSerializer, ProductImageSerializer, ReviewSerializer, OrderSerializer, OrderDetailSerializer, PaymentSerializer
+from .serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ProductImageSerializer, ReviewSerializer, OrderSerializer, OrderDetailSerializer, PaymentSerializer
 # Create your views here.
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView):

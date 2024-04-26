@@ -8,7 +8,7 @@ export default StyleSheet.create({
         paddingVertical: 10,
         marginBottom: 10,
         borderRadius: 10,
-        backgroundColor: 'red'
+        backgroundColor: '#fff'
     },
     categoryImage: {
         width: 100, 

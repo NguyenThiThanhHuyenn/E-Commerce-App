@@ -5,7 +5,7 @@ from .models import *
 class UserSerializer(HyperlinkedModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
 
-    def get_image(self, user):
+    def get_avatar(self, user):
         request = self.context['request']
         if user.avatar.name.startswith('static/'):
             path = "/%s" % user.avatar.name
@@ -30,7 +30,7 @@ class UserSerializer(HyperlinkedModelSerializer):
 class StoreSerializer(HyperlinkedModelSerializer):
     wallpaper = serializers.SerializerMethodField(source='wallpaper')
 
-    def get_image(self, store):
+    def get_wallpaper(self, store):
         request = self.context['request']
         if store.wallpaper.name.startswith('static/'):
             path = "/%s" % store.wallpaper.name

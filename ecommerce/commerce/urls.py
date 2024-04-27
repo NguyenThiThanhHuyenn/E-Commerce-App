@@ -20,6 +20,7 @@ router.register('admin-statistics', views.AdminStatisticsViewSet, basename='admi
 router.register('categories', views.CategoryViewSet)
 router.register(r'products/(?P<category_id>\d+)/', views.ProductByCategoryViewSet, basename='products-by-category')
 router.register('user', views.UserViewSet)
+router.register(r'product-images/(?P<product_id>\d+)/', views.ImageByProductId, basename='image-by-product')
 
 urlpatterns = [
     path('', include(router.urls)),

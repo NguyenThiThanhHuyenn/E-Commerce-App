@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity, Image, FlatList } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import Styles from "./Styles";
-import API, { endpoints } from "../../configs/API";
+import API, { HOST,endpoints } from "../../configs/API";
 
 const Home = () => {
     const [categories, setCategories] = useState(null);
     const [products, setProducts] = useState(null);
+    const [productImages, setProductImages] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,6 +27,13 @@ const Home = () => {
                 console.log("Request URL:", productsResponse.config.url); // In ra URL
                 console.log("Request headers:", productsResponse.config.headers); // In ra headers
                 console.log("Response status:", productsResponse.status); // In ra status code
+
+                const productImageResponse = await API.get(endpoints["product-images"]);
+                setProductImages(productImageResponse.data.results);
+                console.log(productImageResponse.data.results);
+                console.log("Request URL:", productImageResponse.config.url); // In ra URL
+                console.log("Request headers:", productImageResponse.config.headers); // In ra headers
+                console.log("Response status:", productImageResponse.status); // In ra status code
                 
             } catch (ex) {
                 console.error(ex);
@@ -45,11 +53,18 @@ const Home = () => {
     };
 
     const renderProductItem = ({ item }) => {
+        console.log("DEBUG renderProductItem" + AppStyles)
+
+        const imageUrl = `${HOST}${endpoints['product-images'].replace('{product_id}', item.id)}`;
+        console.log(item.id)
+        console.log("DEBUG: "+imageUrl)
+        console.log("DEBUG HOST: "+ HOST)
+
         return (
-            <TouchableOpacity key={item.id} style={AppStyles.ProductCard.container}>
-                {/* <Image source={{ uri: item.image }} style={AppStyles.ProductCard.images} /> */}
-                <Text style={AppStyles.ProductCard.productName}>{item.product_name}</Text>
-                <Text style={AppStyles.ProductCard.price}>{item.price}</Text>
+            <TouchableOpacity key={item.id} style={AppStyles.container}>
+                <Image source={{ uri: imageUrl }} style={AppStyles.images} />
+                <Text style={AppStyles.productName}>{item.product_name}</Text>
+                <Text style={AppStyles.price}>{item.price}</Text>
             </TouchableOpacity>
         );
     };
@@ -64,12 +79,12 @@ const Home = () => {
                 keyExtractor={(item) => item.id.toString()}
             />
 
-            <FlatList
+            {AppStyles != undefined && <FlatList
                 data={products}
                 renderItem={renderProductItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
-            />
+            />}
         </View>
     );
 };

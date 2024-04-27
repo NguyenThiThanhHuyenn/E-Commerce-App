@@ -89,6 +89,16 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 
         return [permissions.IsAuthenticated()]
 
+class ImageByProductId(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        product_id = self.kwargs.get('product_id')
+        if product_id:
+            return ProductImage.objects.filter(product_id=product_id)
+        return ProductImage.objects.none()
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.filter(active=True)
     serializer_class = CategorySerializer

@@ -45,7 +45,10 @@ class Review(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.user
+        if self.product:
+            return f"{self.user.username} - {self.product.product_name}"
+        elif self.store:
+            return f"{self.user.username} - {self.store.store_name}"
 
 class Store(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
@@ -65,7 +68,7 @@ class Product(models.Model):
     store = models.ForeignKey('Store', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
     product_name = models.CharField(max_length=255, null=False)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=0)
     description = RichTextField()
     stock = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)

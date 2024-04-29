@@ -4,6 +4,7 @@ from .models import *
 
 class UserSerializer(HyperlinkedModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
+    new_password = serializers.CharField(write_only=True, required=False)
 
     def get_avatar(self, user):
         request = self.context['request']
@@ -15,7 +16,7 @@ class UserSerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar', 'address', 'phone_number', 'role']
+        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar', 'address', 'phone_number', 'role', 'new_password']
         extra_kwargs = {
             'password': {'write_only': 'true'}
         }

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 
-import styles from "./User";
+import styles from "./UserStyles";
 import {
   Alert,
   Keyboard,
@@ -14,15 +14,48 @@ import { Button, SocialIcon } from "react-native-elements";
 import * as Facebook from 'expo-facebook';
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator } from "react-native";
-import API, {endpoints} from "../../configs/API";
+import API, {authApi, endpoints} from "../../configs/API";
+import MyContext from "../../configs/MyContext";
 
 
 
 const appId = "1047121222092614";
 
-export default function Login() {
 
-  const onLoginPress = () => {};
+export default function LoginScreen() {
+
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [loading, setLoading] = useState(false);
+  const [user, dispatch] = useContext(MyContext);
+
+  const navigation = useNavigation();
+
+  const onLoginPress = async () => {
+  
+    setLoading(true);
+    try {
+      let res = await API.post(endpoints['login'], {
+        'username': username,
+        'password': password,
+        'client_id': 'byXcCLRfnSCPdiaBB7vp44fcVZPb5i74gUDghBiJ',
+        'client_secret': '5T7JqcaoWv306D7QHbWz36XHqu8t0jvPS2cIQSGTMdt5590lwYkQhr89jusneGb4n2fnbSA9d5VNqIpDixGlO18Ya5rVK0Df9JSCvBnXdg9X1trY6iS7F1vCFVlQQQhw',
+        'grant_type': 'password'
+      });
+      console.info(res.data)
+
+      let user = await authApi(res.data.access_token).get(endpoints['current-user']);
+      
+      dispatch({
+        'type': 'login',
+        'payload': user.data
+    });
+      navigation.navigate('HomeE');
+    } catch (error) {
+      Alert.alert("Error!", error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại");
+    }
+    setLoading(false);
+  };
 
   const onRegisterPress = () => {};
 
@@ -61,12 +94,16 @@ export default function Login() {
               placeholder="Username"
               placeholderColor="#c4c3cb"
               style={styles.loginFormTextInput}
+              onChangeText={text => setUsername(text)}
+              value={username}
             />
             <TextInput
               placeholder="Password"
               placeholderColor="#c4c3cb"
               style={styles.loginFormTextInput}
               secureTextEntry={true}
+              onChangeText={text => setPassword(text)}
+              value={password}
             />
             <Button
               containerStyle={styles.forgetPassword}
@@ -76,8 +113,9 @@ export default function Login() {
             />
             <Button
               buttonStyle={styles.loginButton}
-              onPress={() => onLoginPress()}
-              title="Login"
+              onPress={onLoginPress}
+              title={loading ? "Logging in..." : "Login"}
+              disabled={loading}
             />
             <Button
               containerStyle={styles.fbLoginButton}

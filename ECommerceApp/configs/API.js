@@ -1,15 +1,18 @@
 import axios from "axios";
 
-export const HOST = 'https://thanhhy.pythonanywhere.com';
+export const HOST = 'http://192.168.1.2:8000';
 
 export const endpoints ={
     'categories': '/categories/',
     'store': '/store/',
     'products': '/products/',
-    'product-images': '/product-images/{product_id}//'
+    'product-images': `/product-images/{product_id}//`,
+    'login': '/o/token/',
+    'current-user': '/user/current_user/',
+    'register': '/user/', 
 };
 
-// Hàm tiện ích để kiểm tra và cắt bỏ phần "/api" nếu có
+//Hàm tiện ích để kiểm tra và cắt bỏ phần "/api" nếu có
 const processUrl = (url) => {
     if (url.startsWith('/api')) {
         return url.slice(4); // Cắt bỏ 4 ký tự đầu tiên (/api)
@@ -17,14 +20,12 @@ const processUrl = (url) => {
     return url;
 };
 
-export const authApi = () => {
-    return axios.create({
+export const authApi = (accessToken) => axios.create({
         baseURL: HOST,
         headers: {
-            'Authorization': 'Bearer ...'
+            "Authorization": `Bearer ${accessToken}`
         }
     });
-};
 
 // Tạo instance axios mặc định và xử lý các URL trước khi gửi yêu cầu
 const instance = axios.create({

@@ -1,8 +1,8 @@
 from django.db.models import Q, Sum, Count
 from datetime import datetime
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from rest_framework import viewsets, permissions, generics
+from django.http import HttpResponse
+from rest_framework import viewsets, permissions, generics, status
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
@@ -18,10 +18,36 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
     parser_classes = [MultiPartParser, ]
 
     def get_permissions(self):
-        if self.action == 'retrieve':
+        if self.action == 'retrieve' or self.action == 'current_user':
             return [permissions.IsAuthenticated()]
-
+        elif self.action == 'create':
+            return [permissions.AllowAny()]
+        elif self.action == 'update_current_user':
+            return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
+
+    @action(detail=False, methods=['get'])
+    def current_user(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['put'])
+    def update_current_user(self, request):
+        serializer = self.get_serializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        # Update user information
+        user = serializer.save()
+
+        # Update password if new_password provided
+        new_password = request.data.get('new_password')
+        if new_password:
+            user.set_password(new_password)
+            user.save()
+            return Response({'message': 'Password updated successfully.'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.data)
+
+
 
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.filter(active=True)

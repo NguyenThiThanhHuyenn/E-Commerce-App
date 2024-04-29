@@ -5,18 +5,35 @@ export default StyleSheet.create({
         flexDirection: 'column', 
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingVertical: 10,
-        marginBottom: 10,
-        borderRadius: 10,
-        backgroundColor: '#fff'
+        paddingVertical: 20,
+        marginBottom: 30,
+        backgroundColor: 'transparent'
     },
     categoryImage: {
-        width: 100, 
-        height: 100, 
-        borderRadius: 100, 
+        width: 80, 
+        height: 80, 
+        borderRadius: 80,
     },
     categoryText: {
         fontSize: 16,
-        fontWeight: 'bold' 
+        fontWeight: 'bold'
+    },
+    paginationContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    paginationButtons: {
+        backgroundColor: '#e3e1d3',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        borderRadius: 3,
+        height: 30,
+        width: 'auto',
+        
+    },
+    paginationText: {
+        margin: 5,
+        alignContent: 'center'
     }
+
 });

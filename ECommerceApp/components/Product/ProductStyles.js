@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    padding: 20,
+
   },
   descriptionContainer: {
     marginTop: 10,
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
     borderColor: '#cccccc',
     borderRadius: 5,
     padding: 10,
-    height: 450
+    height: 'auto'
   },
   descriptionText: {
     fontSize: 16,

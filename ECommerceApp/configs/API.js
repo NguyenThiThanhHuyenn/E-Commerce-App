@@ -6,10 +6,13 @@ export const endpoints ={
     'categories': '/categories/',
     'store': '/store/',
     'products': '/products/',
+    '/products/{product_id}/': '/products/{product_id}/',
     'product-images': `/product-images/{product_id}//`,
     'login': '/o/token/',
     'current-user': '/user/current_user/',
-    'register': '/user/', 
+    'register': '/user/',
+    'reviews-by-product': '/review/{product_id}//',
+    'reviews-by-store': '/review/{store_id}//'
 };
 
 //Hàm tiện ích để kiểm tra và cắt bỏ phần "/api" nếu có

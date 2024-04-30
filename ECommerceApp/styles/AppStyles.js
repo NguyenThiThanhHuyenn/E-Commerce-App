@@ -22,7 +22,8 @@ export default StyleSheet.create({
     height: PRODUCT_ITEM_HEIGHT + 100,
     borderColor: '#cccccc',
     borderWidth: 0.5,
-    borderRadius: 15
+    borderRadius: 15,
+    backgroundColor: 'white'
   },
   images: {
     width: (SCREEN_WIDTH - (productNumColumns + 1) * PRODUCT_ITEM_MARGIN) / productNumColumns,

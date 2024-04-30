@@ -18,7 +18,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
     parser_classes = [MultiPartParser, ]
 
     def get_permissions(self):
-        if self.action == 'retrieve' or self.action == 'current_user':
+        if self.action == 'current_user':
             return [permissions.IsAuthenticated()]
         elif self.action == 'create':
             return [permissions.AllowAny()]
@@ -68,7 +68,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['product_name', 'price', 'store__store_name']
+    search_fields = ['product_name', 'price', 'store__store_name', 'category__name']
     ordering_fields = ['product_name', 'price']
 
     def get_permissions(self):
@@ -144,6 +144,22 @@ class ReviewViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
 
         return [permissions.IsAuthenticated()]
+
+class ReviewsByProductViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]  # Có thể điều chỉnh quyền truy cập ở đây
+
+    def list(self, request, product_id):
+        reviews = Review.objects.filter(product_id=product_id)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+
+class ReviewsByStoreViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]  # Có thể điều chỉnh quyền truy cập ở đây
+
+    def list(self, request, store_id):
+        reviews = Review.objects.filter(store_id=store_id)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()

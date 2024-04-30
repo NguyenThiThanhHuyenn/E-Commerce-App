@@ -7,20 +7,23 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 20,
         marginBottom: 30,
-        backgroundColor: 'transparent'
+        backgroundColor: 'white'
     },
     categoryImage: {
         width: 80, 
         height: 80, 
         borderRadius: 80,
+        backgroundColor: 'white'
     },
     categoryText: {
         fontSize: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        backgroundColor: 'white'
     },
     paginationContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
+        backgroundColor: 'white'
     },
     paginationButtons: {
         backgroundColor: '#e3e1d3',

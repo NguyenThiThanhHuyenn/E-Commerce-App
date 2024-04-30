@@ -33,7 +33,6 @@ const HomeScreen = () => {
                 setProducts(productsResponse.data.results);
                 setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
                 setNextPageUrl(productsResponse.data.next);
-                console.log("Debug: " + productsResponse.data.next);
     
                 const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
                 const images = await Promise.all(imagesPromises);
@@ -60,7 +59,6 @@ const HomeScreen = () => {
                 setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
                 setNextPageUrl(productsResponse.data.next);
     
-                // Cập nhật dữ liệu hình ảnh cho các sản phẩm mới
                 const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
                 const images = await Promise.all(imagesPromises);
                 const imagesMap = images.reduce((acc, curr, index) => {
@@ -90,7 +88,6 @@ const HomeScreen = () => {
                 setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
                 setNextPageUrl(productsResponse.data.next);
     
-                // Cập nhật dữ liệu hình ảnh cho các sản phẩm mới
                 const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
                 const images = await Promise.all(imagesPromises);
                 const imagesMap = images.reduce((acc, curr, index) => {
@@ -121,7 +118,6 @@ const HomeScreen = () => {
                 setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
                 setNextPageUrl(productsResponse.data.next);
     
-                // Cập nhật dữ liệu hình ảnh cho các sản phẩm mới
                 const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
                 const images = await Promise.all(imagesPromises);
                 const imagesMap = images.reduce((acc, curr, index) => {
@@ -141,7 +137,6 @@ const HomeScreen = () => {
     const fetchProductImages = async (productId) => {
         try {
             const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', productId));
-            // console.log("DEBUG: " + productImageResponse.config.url);
             return productImageResponse.data.results;
             
         } catch (ex) {
@@ -161,7 +156,6 @@ const HomeScreen = () => {
 
     const navigation = useNavigation();
     const renderProductItem = ({ item }) => {
-        console.log('Rendering Product Item:', item.id);
         const productImage = productImages[item.id];
         
         if (!productImage) {
@@ -210,7 +204,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             );
         }
-        // Nút "..." đại diện cho các trang trước
+        
         if (start > 1) {
             buttons.push(
                 <TouchableOpacity key="startDots" style={Styles.paginationButtons}>
@@ -219,7 +213,6 @@ const HomeScreen = () => {
             );
         }
 
-        // Các nút phân trang trong phạm vi đã tính toán
         for (let i = start; i <= end; i++) {
             buttons.push(
                 <TouchableOpacity
@@ -232,7 +225,6 @@ const HomeScreen = () => {
             );
         }
     
-        // Nút "..." đại diện cho các trang sau
         if (end < totalPages) {
             buttons.push(
                 <TouchableOpacity key="endDots" style={Styles.paginationButtons}>
@@ -241,7 +233,6 @@ const HomeScreen = () => {
             );
         }
     
-        // Nút Next
         if (currentPage < totalPages) {
             buttons.push(
                 <TouchableOpacity
@@ -267,6 +258,7 @@ const HomeScreen = () => {
                 data={categories}
                 renderItem={({ item }) => renderCategoryItem(item)}
                 keyExtractor={(item) => item.id.toString()}
+                style={{backgroundColor: 'white'}}
             />
 
             {AppStyles != undefined && <FlatList
@@ -276,9 +268,10 @@ const HomeScreen = () => {
                 renderItem={renderProductItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
+                style={{backgroundColor: 'white'}}
             />}
 
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white' }}>
                 {renderPaginationButtons()}
             </View>
         </View>

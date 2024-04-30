@@ -13,6 +13,9 @@ import MyUserReducer from "../reducers/MyUserReducer";
 import { TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import AppStyles from "../styles/AppStyles";
+import SearchScreen from "../components/Search/Search";
+import SearchResultScreen from "../components/Search/SearchResults";
+import DropdownPicker from 'react-native-dropdown-picker';
 
 
 
@@ -30,6 +33,8 @@ function MainStackNavigator() {
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="UserPage" component={UserPage} options={{ headerShown: false }}/>
         <Stack.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/>
+        <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="SearchResults" component={SearchResultScreen} options={() => ({title: ''})}/>
       </Stack.Navigator>
     );
   }
@@ -39,9 +44,8 @@ function MainStackNavigator() {
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItem label="Home" onPress={() => navigation.navigate('HomeE')}/>
-            <DrawerItem
-                label="Logout" onPress={() => console.log('Logout')}
-            />
+            <DrawerItem label="Search" onPress={() => navigation.navigate('Search')}/>
+            <DrawerItem label="Logout" onPress={() => console.log('Logout')}/>
             <DrawerItem label="Login" onPress={() => navigation.navigate('Login')}/>
         </DrawerContentScrollView>
     );
@@ -58,12 +62,13 @@ function MainStackNavigator() {
                 <Icon name="cart-outline" type='ionicon' style={AppStyles.cartButton}/> 
               </TouchableOpacity>
             ), }}/>
+            <Drawer.Screen name="Search" component={SearchScreen}/>
             {user===null? <>
                 <Drawer.Screen name="Login" component={LoginScreen} />
             </>:<>
                 <Drawer.Screen name={user.username} component={MainStackNavigator} options={{title: 'Ecommerce'}}/>
             </>}
-            {/* <Drawer.Screen name="Search" component={HomeScreen} /> */}
+            
             </Drawer.Navigator>   
         </MyContext.Provider>
     );

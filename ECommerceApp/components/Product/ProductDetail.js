@@ -5,11 +5,13 @@ import Carousel from 'react-native-snap-carousel';
 import API, { endpoints } from "../../configs/API";
 import styles from './ProductStyles';
 import HTML from 'react-native-render-html';
+import ReviewComponent from "../Review/ReviewComponent";
 
 const ProductDetail = ({ route }) => {
   const { product } = route.params;
   const windowWidth = useWindowDimensions().width;
   const [productImages, setProductImages] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const fetchProductImages = async () => {
@@ -20,8 +22,26 @@ const ProductDetail = ({ route }) => {
         console.error(error);
       }
     };
-
+  
+    const fetchReviews = async () => {
+      try {
+        const apiUrl = endpoints['reviews-by-product'].replace('{product_id}', product.id);
+        console.log('API URL:', apiUrl); 
+        const response = await API.get(apiUrl);
+        const reviewsWithUserDetails = await Promise.all(response.data.map(async review => {
+          const userResponse = await API.get(`/user/${review.user}/`);
+          const userDetails = userResponse.data;
+          return { ...review, username: userDetails.username };
+        }));
+        setReviews(reviewsWithUserDetails);
+        console.info(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
     fetchProductImages();
+    fetchReviews();
   }, [product.id]);
 
   const renderItem = ({ item }) => (
@@ -45,7 +65,7 @@ const ProductDetail = ({ route }) => {
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{product.product_name}</Text>
-        <ScrollView style={styles.descriptionContainer} showsHorizontalScrollIndicator={true}>
+        <ScrollView style={styles.descriptionContainer} showsHorizontalScrollIndicator={false}>
             <View style={styles.descriptionText} numberOfLines={undefined}>
                 <HTML source={{ html: product.description }} contentWidth={windowWidth} />
             </View>
@@ -56,6 +76,23 @@ const ProductDetail = ({ route }) => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Add to Cart</Text>
         </TouchableOpacity>
+      </View>
+      {console.info('Reviews:', reviews)}
+      <View>
+      <Text style={styles.title}>Customer Reviews</Text>
+        {reviews && reviews.length > 0 ? (
+          reviews.map((item) => (
+            <ReviewComponent
+              key={item.id}
+              username={item.username}
+              rating={item.rating}
+              comment={item.comment}
+              created_at={item.created_at}
+            />
+          ))
+        ) : (
+          <Text>No reviews available</Text>
+        )}
       </View>
     </ScrollView>
   );

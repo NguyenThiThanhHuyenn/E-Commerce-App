@@ -21,6 +21,8 @@ router.register('categories', views.CategoryViewSet)
 router.register(r'products/(?P<category_id>\d+)/', views.ProductByCategoryViewSet, basename='products-by-category')
 router.register('user', views.UserViewSet)
 router.register('review', views.ReviewViewSet)
+router.register(r'review/(?P<product_id>\d+)/', views.ReviewsByProductViewSet, basename='reviews-by-product')
+router.register(r'review/(?P<store_id>\d+)/', views.ReviewsByStoreViewSet, basename='reviews-by-store')
 router.register(r'product-images/(?P<product_id>\d+)/', views.ImageByProductId, basename='image-by-product')
 
 urlpatterns = [

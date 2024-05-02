@@ -50,6 +50,18 @@ const HomeScreen = () => {
     }, []);
 
 
+    const handleCategoryPress = async (categories) => {
+        try {
+            const apiUrl = endpoints['products-by-category'].replace('{category_id}', categories.id);
+            const productsResponse = await API.get(apiUrl);
+            console.log('API URL:', apiUrl);
+            navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results });
+            
+        } catch (ex) {
+            console.error(ex);
+        }
+    };
+    
 
     const handleNextPage = async () => {
         if (nextPageUrl) {
@@ -147,7 +159,7 @@ const HomeScreen = () => {
 
     const renderCategoryItem = (category) => {
         return (
-            <TouchableOpacity key={category.id} style={Styles.categoryItem}>
+            <TouchableOpacity key={category.id} style={Styles.categoryItem} onPress={() => handleCategoryPress(category)}>
                 <Image source={{ uri: category.image }} style={Styles.categoryImage} />
                 <Text style={Styles.categoryText}>{category.name}</Text>
             </TouchableOpacity>

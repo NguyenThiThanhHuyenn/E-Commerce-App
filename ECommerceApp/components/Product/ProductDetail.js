@@ -6,12 +6,14 @@ import API, { endpoints } from "../../configs/API";
 import styles from './ProductStyles';
 import HTML from 'react-native-render-html';
 import ReviewComponent from "../Review/ReviewComponent";
+import { Icon } from "react-native-elements";
 
 const ProductDetail = ({ route }) => {
   const { product } = route.params;
   const windowWidth = useWindowDimensions().width;
   const [productImages, setProductImages] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(null);
 
   useEffect(() => {
     const fetchProductImages = async () => {
@@ -35,11 +37,14 @@ const ProductDetail = ({ route }) => {
         }));
         setReviews(reviewsWithUserDetails);
         console.info(response.data);
+        const totalRating = reviewsWithUserDetails.reduce((total, review) => total + review.rating, 0);
+        const avgRating = totalRating / reviewsWithUserDetails.length;
+        setAverageRating(avgRating.toFixed(1));
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     fetchProductImages();
     fetchReviews();
   }, [product.id]);
@@ -65,6 +70,9 @@ const ProductDetail = ({ route }) => {
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{product.product_name}</Text>
+        {averageRating && (
+          <Text style={styles.averageRating}>{averageRating}/5.0 <Icon  name='star' size={20} type='ionicon' color={'#b89d3b'}/></Text>
+        )}
         <ScrollView style={styles.descriptionContainer} showsHorizontalScrollIndicator={false}>
             <View style={styles.descriptionText} numberOfLines={undefined}>
                 <HTML source={{ html: product.description }} contentWidth={windowWidth} />

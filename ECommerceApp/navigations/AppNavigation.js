@@ -15,7 +15,7 @@ import { Icon } from "react-native-elements";
 import AppStyles from "../styles/AppStyles";
 import SearchScreen from "../components/Search/Search";
 import SearchResultScreen from "../components/Search/SearchResults";
-import DropdownPicker from 'react-native-dropdown-picker';
+import ProductByCategory from "../components/Product/ProductByCategory";
 
 
 
@@ -35,6 +35,7 @@ function MainStackNavigator() {
         <Stack.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/>
         <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="SearchResults" component={SearchResultScreen} options={() => ({title: ''})}/>
+        <Stack.Screen name="ProductByCategory" component={ProductByCategory} options={() => ({title: ''})}/>
       </Stack.Navigator>
     );
   }

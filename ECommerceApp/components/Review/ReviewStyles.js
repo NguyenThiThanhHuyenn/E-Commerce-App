@@ -26,9 +26,6 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 8,
     },
-    icon: {
-        alignItems:'baseline'
-    },
     comment: {
         color: '#333333',
         marginBottom: 5

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AppStyles from '../../styles/AppStyles';
+import DropdownPicker from 'react-native-dropdown-picker';
 
 const SearchResultScreen = ({ route }) => {
   const { products, productImages } = route.params;

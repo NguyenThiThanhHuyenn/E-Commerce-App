@@ -25,9 +25,20 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ["id", "store_name", "user", "active", "average_rating"]
+    list_display = ["id", "store_name", "user", "active"]
     search_fields = ["store_name", "user__username"]
-    readonly_fields = ['store_wallpaper']
+    readonly_fields = ['store_wallpaper', 'get_average_rating']
+
+    def get_average_rating(self, obj):
+        return obj.average_rating()
+
+    get_average_rating.short_description = 'Average Rating'
+
+    def average_rating(self, obj):
+        return obj.average_rating()
+
+    average_rating.short_description = 'Average Rating'
+
 
     def store_wallpaper(self, store):
         if store.wallpaper:
@@ -53,10 +64,21 @@ class ProductForm(forms.ModelForm):
         fields = '__all__'
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["id", "product_name", "category", "store", "price", "stock", "average_rating"]
+    list_display = ["id", "product_name", "category", "store", "price", "stock"]
     search_fields = ["product_name", "category__name", "store__store_name"]
     inlines = [ProductImageInline]
     form = ProductForm
+    readonly_fields = ['get_average_rating']
+
+    def get_average_rating(self, obj):
+        return obj.average_rating()
+
+    get_average_rating.short_description = 'Average Rating'
+
+    def average_rating(self, obj):
+        return obj.average_rating()
+
+    average_rating.short_description = 'Average Rating'
 
 class CommerceAppAdminSite(admin.AdminSite):
     site_header = 'HE THONG QUAN LY SAN GIAO DICH THUONG MAI DIEN TU'

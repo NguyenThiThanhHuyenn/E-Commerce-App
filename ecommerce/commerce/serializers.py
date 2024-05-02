@@ -40,8 +40,7 @@ class StoreSerializer(HyperlinkedModelSerializer):
         return request.build_absolute_uri(path)
     class Meta:
         model = Store
-        fields = ["id", "user", "store_name", "wallpaper", "description", "created_at",
-                  "updated_at"]
+        fields = ["id", "user", "store_name", "wallpaper", "description", "created_at", "updated_at"]
 
 class CategorySerializer(HyperlinkedModelSerializer):
     image = serializers.SerializerMethodField(source='image')

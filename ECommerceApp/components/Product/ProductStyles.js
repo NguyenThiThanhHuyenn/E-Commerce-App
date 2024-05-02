@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const { width: viewportWidth } = Dimensions.get('window');
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -72,6 +72,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center'
   },
+  categoryBanner: {
+    height: 200,
+    width: '100%'
+  },
+  averageRating: {
+    fontSize: 20
+  }
 });
 
-export default styles;
+

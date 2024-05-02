@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
-
-
+from django.db.models import Avg
 
 
 class User(AbstractUser):
@@ -57,12 +56,14 @@ class Store(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    reviews = models.ManyToManyField('Review', related_name='store_reviews+', blank=True)
-    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.store_name
+
+    def average_rating(self):
+        return self.review_set.aggregate(Avg('rating'))['rating__avg']
+
 
 class Product(models.Model):
     store = models.ForeignKey('Store', on_delete=models.CASCADE)
@@ -74,11 +75,13 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
-    reviews = models.ManyToManyField('Review', related_name='product_reviews+', blank=True)
-    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
 
     def __str__(self):
         return self.product_name
+
+    def average_rating(self):
+        return self.review_set.aggregate(Avg('rating'))['rating__avg']
+
 
 
 

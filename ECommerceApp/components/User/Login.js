@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator } from "react-native";
 import API, {authApi, endpoints} from "../../configs/API";
 import MyContext from "../../configs/MyContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -38,21 +39,23 @@ export default function LoginScreen() {
       let res = await API.post(endpoints['login'], {
         'username': username,
         'password': password,
-        'client_id': 'byXcCLRfnSCPdiaBB7vp44fcVZPb5i74gUDghBiJ',
-        'client_secret': '5T7JqcaoWv306D7QHbWz36XHqu8t0jvPS2cIQSGTMdt5590lwYkQhr89jusneGb4n2fnbSA9d5VNqIpDixGlO18Ya5rVK0Df9JSCvBnXdg9X1trY6iS7F1vCFVlQQQhw',
+        'client_id': "byXcCLRfnSCPdiaBB7vp44fcVZPb5i74gUDghBiJ",
+        'client_secret': "5T7JqcaoWv306D7QHbWz36XHqu8t0jvPS2cIQSGTMdt5590lwYkQhr89jusneGb4n2fnbSA9d5VNqIpDixGlO18Ya5rVK0Df9JSCvBnXdg9X1trY6iS7F1vCFVlQQQhw",
         'grant_type': 'password'
       });
       console.info(res.data)
-
-      let user = await authApi(res.data.access_token).get(endpoints['current-user']);
-      
-      dispatch({
-        'type': 'login',
-        'payload': user.data
-    });
-      navigation.navigate('HomeE');
+    //   await AsyncStorage.setItem('token_access', res.data.access_token);
+    //   let user = await authApi(res.data.access_token).get(endpoints['current-user']);
+    //   dispatch({
+    //     "type": "login",
+    //     "payload": user.data
+    // });
+    //   navigation.navigate('HomeE');
     } catch (error) {
-      Alert.alert("Error!", error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại");
+      Alert.alert("Error!", error.response?.data?.detail || "Đăng nhập thất bại. Vui lòng thử lại.");
+      console.error(error);
+      console.error("Error response:", error.response); 
+    console.error("Error details:", error.response?.status, error.response?.data); 
     }
     setLoading(false);
   };

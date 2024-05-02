@@ -4,7 +4,7 @@ export const HOST = 'http://192.168.1.10:8000';
 
 export const endpoints ={
     'categories': '/categories/',
-    'store': '/store/',
+    'store': '/store/{store_id}/',
     'products': '/products/',
     '/products/{product_id}/': '/products/{product_id}/',
     'product-images': `/product-images/{product_id}//`,
@@ -12,8 +12,9 @@ export const endpoints ={
     'current-user': '/user/current_user/',
     'register': '/user/',
     'reviews-by-product': '/review/{product_id}//',
-    'reviews-by-store': '/review/{store_id}//',
-    'products-by-category': '/products/{category_id}//'
+    'reviews-by-store': '/review-store/{store_id}//',
+    'products-by-category': '/products/{category_id}//',
+    'products-by-store': '/products-store/{store_id}//'
 };
 
 //Hàm tiện ích để kiểm tra và cắt bỏ phần "/api" nếu có

@@ -14,7 +14,7 @@ export default SearchScreen = () => {
     const [sortOrder, setSortOrder] = useState('asc'); 
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState([]); // Thêm state mới để lưu danh sách sản phẩm đã lọc
+    const [filteredProducts, setFilteredProducts] = useState([]); 
 
     const [productImages, setProductImages] = useState({});
 

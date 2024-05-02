@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../components/Home/Home";
 import LoginScreen from "../components/User/Login";
 import RegisterScreen from "../components/User/Register";
-import UserPage from "../components/User/Register";
+import UserPage from "../components/User/UserPage";
 import ProductDetail from "../components/Product/ProductDetail";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
@@ -16,6 +16,7 @@ import AppStyles from "../styles/AppStyles";
 import SearchScreen from "../components/Search/Search";
 import SearchResultScreen from "../components/Search/SearchResults";
 import ProductByCategory from "../components/Product/ProductByCategory";
+import Store from "../components/Store/Store";
 
 
 
@@ -36,6 +37,7 @@ function MainStackNavigator() {
         <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="SearchResults" component={SearchResultScreen} options={() => ({title: ''})}/>
         <Stack.Screen name="ProductByCategory" component={ProductByCategory} options={() => ({title: ''})}/>
+        <Stack.Screen name="Store" component={Store} options={() => ({title: ''})}/>
       </Stack.Navigator>
     );
   }
@@ -46,17 +48,19 @@ function MainStackNavigator() {
         <DrawerContentScrollView {...props}>
             <DrawerItem label="Home" onPress={() => navigation.navigate('HomeE')}/>
             <DrawerItem label="Search" onPress={() => navigation.navigate('Search')}/>
-            <DrawerItem label="Logout" onPress={() => console.log('Logout')}/>
+            <DrawerItem label="Logout" onPress={() => dispatch({type: 'logout'})}/>
             <DrawerItem label="Login" onPress={() => navigation.navigate('Login')}/>
         </DrawerContentScrollView>
     );
 }
 
-  function DrawerNavigation() {
+
+  export default function AppNavigation() {
     const [user, dispatch] = useReducer(MyUserReducer, null);
     return (
-        <MyContext.Provider value={[user, dispatch]}>
-            <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
+      <MyContext.Provider value={[user, dispatch]}>
+        <NavigationContainer>
+        <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
             <Drawer.Screen name="Home" component={MainStackNavigator} options={{title: 'Ecommerce', 
             headerRight: () => (
               <TouchableOpacity onPress={() => console.log("cart")}>
@@ -67,18 +71,12 @@ function MainStackNavigator() {
             {user===null? <>
                 <Drawer.Screen name="Login" component={LoginScreen} />
             </>:<>
-                <Drawer.Screen name={user.username} component={MainStackNavigator} options={{title: 'Ecommerce'}}/>
+                <Drawer.Screen name={user.username} component={HomeScreen}/>
             </>}
             
             </Drawer.Navigator>   
-        </MyContext.Provider>
-    );
-  }
-
-  export default function AppNavigation() {
-    return (
-        <NavigationContainer>
-            <DrawerNavigation />
         </NavigationContainer>
+      </MyContext.Provider>
+        
     );
   }

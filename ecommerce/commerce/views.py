@@ -1,9 +1,8 @@
 from django.db.models import Q, Sum, Count
 from datetime import datetime
-from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions, generics, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
@@ -76,6 +75,16 @@ class ProductViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
 
         return [permissions.IsAuthenticated()]
+
+
+class ProductByStoreViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        store_id = self.kwargs.get('store_id')
+        if store_id:
+            return Product.objects.filter(store_id=store_id)
+        return Product.objects.none()
 
 class ProductByCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductSerializer

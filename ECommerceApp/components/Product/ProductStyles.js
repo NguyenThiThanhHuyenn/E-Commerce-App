@@ -22,6 +22,7 @@ export default StyleSheet.create({
   imageContainer: {
     width: viewportWidth,
     height: 250,
+    
   
   },
   infoContainer: {
@@ -77,7 +78,16 @@ export default StyleSheet.create({
     width: '100%'
   },
   averageRating: {
-    fontSize: 20
+    fontSize: 20,
+    fontStyle: 'italic',
+    color: 'gray',
+  },
+  storeName: {
+    fontSize: 18,
+    fontStyle: 'italic',
+    color: 'gray',
+    marginBottom: 20
+  
   }
 });
 

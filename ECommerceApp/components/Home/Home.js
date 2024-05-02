@@ -55,7 +55,7 @@ const HomeScreen = () => {
             const apiUrl = endpoints['products-by-category'].replace('{category_id}', categories.id);
             const productsResponse = await API.get(apiUrl);
             console.log('API URL:', apiUrl);
-            navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results });
+            navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results});
             
         } catch (ex) {
             console.error(ex);

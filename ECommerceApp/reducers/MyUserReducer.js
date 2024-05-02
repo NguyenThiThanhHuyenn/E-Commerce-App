@@ -5,8 +5,10 @@ const MyUserReducer = (currentState, action) => {
         case "logout":
             return null;
 
+        default: 
+            return currentState;
+
     }
-    return currentState;
 }
 
 export default MyUserReducer;

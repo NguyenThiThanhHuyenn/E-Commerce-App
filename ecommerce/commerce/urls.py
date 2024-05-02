@@ -22,8 +22,9 @@ router.register(r'products/(?P<category_id>\d+)/', views.ProductByCategoryViewSe
 router.register('user', views.UserViewSet)
 router.register('review', views.ReviewViewSet)
 router.register(r'review/(?P<product_id>\d+)/', views.ReviewsByProductViewSet, basename='reviews-by-product')
-router.register(r'review/(?P<store_id>\d+)/', views.ReviewsByStoreViewSet, basename='reviews-by-store')
+router.register(r'review-store/(?P<store_id>\d+)/', views.ReviewsByStoreViewSet, basename='reviews-by-store')
 router.register(r'product-images/(?P<product_id>\d+)/', views.ImageByProductId, basename='image-by-product')
+router.register(r'products-store/(?P<store_id>\d+)/', views.ProductByStoreViewSet, basename='products-by-store')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -6,7 +6,8 @@ import API, { endpoints } from "../../configs/API";
 import styles from './ProductStyles';
 import HTML from 'react-native-render-html';
 import ReviewComponent from "../Review/ReviewComponent";
-import { Icon } from "react-native-elements";
+import { Icon } from 'react-native-elements';
+import { useNavigation } from "@react-navigation/native";
 
 const ProductDetail = ({ route }) => {
   const { product } = route.params;
@@ -14,12 +15,16 @@ const ProductDetail = ({ route }) => {
   const [productImages, setProductImages] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(null);
+  const [storeName, setStoreName] = useState('');
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchProductImages = async () => {
       try {
         const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', product.id));
         setProductImages(productImageResponse.data.results);
+
       } catch (error) {
         console.error(error);
       }
@@ -28,7 +33,7 @@ const ProductDetail = ({ route }) => {
     const fetchReviews = async () => {
       try {
         const apiUrl = endpoints['reviews-by-product'].replace('{product_id}', product.id);
-        console.log('API URL:', apiUrl); 
+        // console.log('API URL:', apiUrl); 
         const response = await API.get(apiUrl);
         const reviewsWithUserDetails = await Promise.all(response.data.map(async review => {
           const userResponse = await API.get(`/user/${review.user}/`);
@@ -36,10 +41,19 @@ const ProductDetail = ({ route }) => {
           return { ...review, username: userDetails.username };
         }));
         setReviews(reviewsWithUserDetails);
-        console.info(response.data);
-        const totalRating = reviewsWithUserDetails.reduce((total, review) => total + review.rating, 0);
-        const avgRating = totalRating / reviewsWithUserDetails.length;
+        const totalRating = reviewsWithUserDetails.length > 0 ? reviewsWithUserDetails.reduce((total, review) => total + review.rating, 0) : 0;
+        const avgRating = totalRating / (reviewsWithUserDetails.length || 1);
         setAverageRating(avgRating.toFixed(1));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchStoreName = async () => {
+      try {
+        const storeResponse = await API.get(endpoints['store'].replace('{store_id}', product.store));
+        setStoreName(storeResponse.data.store_name);
+        console.info(storeResponse.data.store_name)
       } catch (error) {
         console.error(error);
       }
@@ -47,6 +61,7 @@ const ProductDetail = ({ route }) => {
 
     fetchProductImages();
     fetchReviews();
+    fetchStoreName();
   }, [product.id]);
 
   const renderItem = ({ item }) => (
@@ -54,6 +69,11 @@ const ProductDetail = ({ route }) => {
       <Image source={{ uri: item.image }} style={styles.image} />
     </View>
   );
+
+  const handleToStore = () => {
+
+    navigation.navigate('Store', { storeId: product.store});
+  };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -70,9 +90,12 @@ const ProductDetail = ({ route }) => {
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{product.product_name}</Text>
+        <TouchableOpacity onPress={() => handleToStore()}><Text style={styles.storeName}><Icon name="storefront-outline" type="ionicon"/> {storeName}</Text></TouchableOpacity>
+        
         {averageRating && (
-          <Text style={styles.averageRating}>{averageRating}/5.0 <Icon  name='star' size={20} type='ionicon' color={'#b89d3b'}/></Text>
+          <Text style={styles.averageRating}>{averageRating ? `${averageRating}/5.0` : '0.0/5.0'}<Icon  name='star' size={20} type='ionicon' color={'#b89d3b'}/></Text> 
         )}
+        
         <ScrollView style={styles.descriptionContainer} showsHorizontalScrollIndicator={false}>
             <View style={styles.descriptionText} numberOfLines={undefined}>
                 <HTML source={{ html: product.description }} contentWidth={windowWidth} />
@@ -85,7 +108,7 @@ const ProductDetail = ({ route }) => {
           <Text style={styles.buttonText}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
-      {console.info('Reviews:', reviews)}
+      {/* {console.info('Reviews:', reviews)} */}
       <View>
       <Text style={styles.title}>Customer Reviews</Text>
         {reviews && reviews.length > 0 ? (

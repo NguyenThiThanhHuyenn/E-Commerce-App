@@ -15,7 +15,7 @@ const SearchResultScreen = ({ route }) => {
       return null; 
     }
 
-    const imageUrl = productImage.image;
+    const imageUrl = productImage.image_url;
     
     return (
       <TouchableOpacity

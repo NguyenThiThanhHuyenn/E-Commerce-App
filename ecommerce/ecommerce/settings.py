@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +29,7 @@ SECRET_KEY = 'django-insecure-l*44q_93937zi04ck6=w(0s^y3#qvu%ukfcy3o))b+f^z*ic!6
 DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.1.10']
+
 
 
 # Application definition
@@ -145,3 +149,9 @@ CKEDITOR_UPLOAD_PATH = 'product/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+cloudinary.config(
+    cloud_name="dhbx0nbwf",
+    api_key="934745583984279",
+    api_secret="zTBknsZPcvCbNULmf-1GIN0V-qI"
+)

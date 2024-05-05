@@ -24,7 +24,7 @@ const ProductDetail = ({ route }) => {
       try {
         const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', product.id));
         setProductImages(productImageResponse.data.results);
-
+        
       } catch (error) {
         console.error(error);
       }
@@ -64,9 +64,10 @@ const ProductDetail = ({ route }) => {
     fetchStoreName();
   }, [product.id]);
 
+
   const renderItem = ({ item }) => (
     <View style={styles.imageContainer}>
-      <Image source={{ uri: item.image }} style={styles.image} />
+      <Image source={{ uri: item.image_url }} style={styles.image} />
     </View>
   );
 
@@ -74,6 +75,8 @@ const ProductDetail = ({ route }) => {
 
     navigation.navigate('Store', { storeId: product.store});
   };
+
+  
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>

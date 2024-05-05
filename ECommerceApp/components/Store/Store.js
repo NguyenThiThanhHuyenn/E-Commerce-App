@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Image, ScrollView } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import PropTypes from 'prop-types';
 import API, { endpoints } from "../../configs/API";
 import styles from './StoreStyles';
 import { Icon } from "react-native-elements";
 import ReviewComponent from "../Review/ReviewComponent"; // Import ReviewComponent
+import MyContext from "../../configs/MyContext";
 
 
 const Store = ({ route }) => {
+  const [currentUser] = useContext(MyContext);
   const { storeId } = route.params;
   const [store, setStore] = useState(null);
   const [products, setProducts] = useState([]);
@@ -55,7 +57,7 @@ const Store = ({ route }) => {
             const productImages = productImageResponse.data.results;
             // Lấy ảnh đầu tiên từ danh sách ảnh và gán vào product
             if (productImages.length > 0) {
-              product.image = productImages[0].image;
+              product.image_url = productImages[0].image_url;
             }
             const reviewsResponse = await API.get(endpoints['reviews-by-product'].replace('{product_id}', product.id));
             product.reviews = reviewsResponse.data;
@@ -75,27 +77,53 @@ const Store = ({ route }) => {
     fetchData();
   }, [storeId]);
 
+  const isStoreOwner = store && store.user.includes(`/user/${currentUser.id}/`);
+
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {store && (
         <View style={styles.storeInfoContainer}>
-          <Image source={{ uri: store.wallpaper }} style={styles.storeWallpaper} />
+          <Image source={{ uri: store.wallpaper_url }} style={styles.storeWallpaper} />
           <View style={styles.storeHeader}>
             <Text style={styles.storeName}>{store.store_name}</Text>
-            <Text style={styles.storeAverageRating}>
+          </View>
+          <View style={styles.storeInfo} >
+          <View>
+          <Text style={styles.storeAverageRating}>
               Rating: {storeAverageRating.toFixed(1)}/5.0
             </Text>
-          </View>
           <Text style={styles.storeDescription}>{store.description}</Text>
+          </View>
+          {isStoreOwner && (
+              <View style={styles.buttonForSeller}>
+                <TouchableOpacity style={styles.buttonUpdate}>
+                  <Icon name="pencil-outline" type="ionicon"/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}>
+                <Icon name="stats-chart-outline" type="ionicon"/> 
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
         </View>
       )}
 
       <View style={styles.productsContainer}>
-        <Text style={styles.productsTitle}>Products</Text>
+        <View style={styles.headerProductList}>
+          <Text style={styles.productsTitle}>Products</Text>
+            {isStoreOwner && (
+              <View style={styles.buttonAddProduct}>
+                <TouchableOpacity style={styles.button}>
+                <Icon name="add-outline" type="ionicon" size={25}/>
+                </TouchableOpacity>
+              </View>
+            )}
+        </View>
         {products.map((product) => (
           <View key={product.id} >
-            <View style={styles.productItem}>
-              <Image source={{ uri: product.image }} style={styles.productImage} />
+            <TouchableOpacity><View style={styles.productItem}>
+              <Image source={{ uri: product.image_url }} style={styles.productImage} />
               <View style={styles.productInfo}>
                 <Text style={styles.productName}>{product.product_name}</Text>
                 <Text style={styles.productPrice}>{product.price} VND</Text>
@@ -103,7 +131,7 @@ const Store = ({ route }) => {
                   {calculateAverageRating(product.reviews).toFixed(1)}/5.0<Icon  name='star' size={20} type='ionicon' color={'#b89d3b'}/>
                 </Text>
               </View>
-            </View>
+            </View></TouchableOpacity>
           </View>
         ))}
       </View>

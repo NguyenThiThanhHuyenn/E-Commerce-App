@@ -8,7 +8,7 @@ import ProductDetail from "../components/Product/ProductDetail";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import MyContext from "../configs/MyContext";
-import { useReducer } from "react";
+import { useContext, useReducer } from "react";
 import MyUserReducer from "../reducers/MyUserReducer";
 import { TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
@@ -17,6 +17,7 @@ import SearchScreen from "../components/Search/Search";
 import SearchResultScreen from "../components/Search/SearchResults";
 import ProductByCategory from "../components/Product/ProductByCategory";
 import Store from "../components/Store/Store";
+import CreateStoreScreen from "../components/Store/CreateStore";
 
 
 
@@ -38,18 +39,32 @@ function MainStackNavigator() {
         <Stack.Screen name="SearchResults" component={SearchResultScreen} options={() => ({title: ''})}/>
         <Stack.Screen name="ProductByCategory" component={ProductByCategory} options={() => ({title: ''})}/>
         <Stack.Screen name="Store" component={Store} options={() => ({title: ''})}/>
+        <Stack.Screen name="CreateStore" component={CreateStoreScreen} options={() => ({title: 'Create Store'})}/>
       </Stack.Navigator>
     );
   }
 
+  
+
   function CustomDrawerContent(props) {
     const navigation = useNavigation();
+    const [user, dispatch] = useContext(MyContext);    
+    
+    const handleLogout = () => {
+      navigation.navigate('HomeE');
+      dispatch({ type: 'logout' });
+    };
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItem label="Home" onPress={() => navigation.navigate('HomeE')}/>
             <DrawerItem label="Search" onPress={() => navigation.navigate('Search')}/>
-            <DrawerItem label="Logout" onPress={() => dispatch({type: 'logout'})}/>
-            <DrawerItem label="Login" onPress={() => navigation.navigate('Login')}/>
+            {user===null? <>
+              <DrawerItem label="Log in" onPress={() => navigation.navigate('Login')}/>
+              <DrawerItem label="Register" onPress={() => navigation.navigate('Register')}/>
+            </>:<>
+                <DrawerItem label={user.username} onPress={() => navigation.navigate('UserPage')}/>
+                <DrawerItem label="Log out" onPress={handleLogout}/>
+            </>}
         </DrawerContentScrollView>
     );
 }
@@ -57,6 +72,8 @@ function MainStackNavigator() {
 
   export default function AppNavigation() {
     const [user, dispatch] = useReducer(MyUserReducer, null);
+
+    console.log("Current user:", user);
     return (
       <MyContext.Provider value={[user, dispatch]}>
         <NavigationContainer>
@@ -67,13 +84,6 @@ function MainStackNavigator() {
                 <Icon name="cart-outline" type='ionicon' style={AppStyles.cartButton}/> 
               </TouchableOpacity>
             ), }}/>
-            <Drawer.Screen name="Search" component={SearchScreen}/>
-            {user===null? <>
-                <Drawer.Screen name="Login" component={LoginScreen} />
-            </>:<>
-                <Drawer.Screen name={user.username} component={HomeScreen}/>
-            </>}
-            
             </Drawer.Navigator>   
         </NavigationContainer>
       </MyContext.Provider>

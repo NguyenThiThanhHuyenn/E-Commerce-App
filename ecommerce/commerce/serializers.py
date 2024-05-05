@@ -3,59 +3,53 @@ from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializ
 from .models import *
 
 class UserSerializer(HyperlinkedModelSerializer):
-    avatar = serializers.SerializerMethodField(source='avatar')
     new_password = serializers.CharField(write_only=True, required=False)
-
-    def get_avatar(self, user):
-        request = self.context['request']
-        if user.avatar.name.startswith('static/'):
-            path = "/%s" % user.avatar.name
-        else:
-            path = '/static/%s' % (user.avatar)
-        return request.build_absolute_uri(path)
+    avatar_url = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar', 'address', 'phone_number', 'role', 'new_password']
+        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar', 'address', 'phone_number', 'role', 'new_password', 'avatar_url']
         extra_kwargs = {
-            'password': {'write_only': 'true'}
+            'password': {'write_only': True}
         }
 
     def create(self, validated_data):
         user = User(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
-
         return user
 
-class StoreSerializer(HyperlinkedModelSerializer):
-    wallpaper = serializers.SerializerMethodField(source='wallpaper')
+    def get_avatar_url(self, obj):
+        if obj.avatar:
+            return obj.avatar.url
+        return None
 
-    def get_wallpaper(self, store):
-        request = self.context['request']
-        if store.wallpaper.name.startswith('static/'):
-            path = "/%s" % store.wallpaper.name
-        else:
-            path = '/static/%s' % (store.wallpaper)
-        return request.build_absolute_uri(path)
+
+class StoreSerializer(HyperlinkedModelSerializer):
+    wallpaper_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Store
-        fields = ["id", "user", "store_name", "wallpaper", "description", "created_at", "updated_at"]
+        fields = ["id", "user", "store_name", "wallpaper", "wallpaper_url", "description", "created_at", "updated_at"]
+
+    def get_wallpaper_url(self, obj):
+        if obj.wallpaper:
+            return obj.wallpaper.url
+        return None
+
 
 class CategorySerializer(HyperlinkedModelSerializer):
-    image = serializers.SerializerMethodField(source='image')
-
-    def get_image(self, category):
-        request = self.context['request']
-        if category.image.name.startswith('static/'):
-            path = "/%s" % category.image.name
-        else:
-            path = '/static/%s' % (category.image)
-        return request.build_absolute_uri(path)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'parent', 'image']
+        fields = ['id', 'name', 'parent', 'image', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
+
 
 
 class ReviewSerializer(ModelSerializer):
@@ -70,18 +64,16 @@ class ProductSerializer(ModelSerializer):
         fields = ['id', 'store', 'category', 'product_name', 'price', 'description', 'stock', 'created_at', 'updated_at']
 
 class ProductImageSerializer(HyperlinkedModelSerializer):
-    image = serializers.SerializerMethodField(source='image')
+    image_url = serializers.SerializerMethodField()
 
-    def get_image(self, productImage):
-        request = self.context['request']
-        if productImage.image.name.startswith('static/'):
-            path = "/%s" % productImage.image.name
-        else:
-            path = '/static/%s' % (productImage.image)
-        return request.build_absolute_uri(path)
     class Meta:
         model = ProductImage
-        fields = ['id', 'product', 'image', 'created_at', 'updated_at']
+        fields = ['id', 'product', 'image', 'image_url', 'created_at', 'updated_at']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
 
 class OrderSerializer(ModelSerializer):
     class Meta:

@@ -1,11 +1,13 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
 from django.db.models import Avg
 
 
+
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to='avatar/%Y/%m', default=None)
+    avatar = CloudinaryField(type='upload', resource_type='image', default=None)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
     SELLER_ROLE = 'seller'
@@ -23,7 +25,7 @@ class User(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=100, null=False, unique=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-    image = models.ImageField(upload_to='categoryImage/%Y/%m', default=None)
+    image = CloudinaryField(type='upload', resource_type='image', default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
@@ -52,7 +54,7 @@ class Review(models.Model):
 class Store(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
     store_name = models.CharField(max_length=255)
-    wallpaper = models.ImageField(upload_to='wallpaper/%Y/%m', default=None)
+    wallpaper = CloudinaryField(type='upload', resource_type='image', default=None)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -87,7 +89,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='images+')
-    image = models.ImageField(upload_to='product/%Y/%m', default=None)
+    image = CloudinaryField(type='upload', resource_type='image', default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

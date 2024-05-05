@@ -5,6 +5,8 @@ export const HOST = 'http://192.168.1.10:8000';
 export const endpoints ={
     'categories': '/categories/',
     'store': '/store/{store_id}/',
+    'create-store': '/store/',
+    'store-by-user': '/store-user/{user_id}//',
     'products': '/products/',
     '/products/{product_id}/': '/products/{product_id}/',
     'product-images': `/product-images/{product_id}//`,

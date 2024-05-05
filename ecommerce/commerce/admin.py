@@ -21,7 +21,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
     def category_image(self, category):
         if category.image:
-            return mark_safe('<img src="/static/{url}" width="450" height="120" />'.format(url=category.image.name))
+            return mark_safe('<img src="{url}" width="450" height="120" />'.format(url=category.image.url))
 
 
 class StoreAdmin(admin.ModelAdmin):
@@ -42,7 +42,7 @@ class StoreAdmin(admin.ModelAdmin):
 
     def store_wallpaper(self, store):
         if store.wallpaper:
-            return mark_safe('<img src="/static/{url}" width="450" height="120" />'.format(url=store.wallpaper.name))
+            return mark_safe('<img src="{url}" width="450" height="120" />'.format(url=store.wallpaper.url))
 
 
 
@@ -53,7 +53,7 @@ class ProductImageInline(admin.TabularInline):
 
     def preview_image(self, product):
         if product.image:
-            return mark_safe('<img src="/static/{url}" width="120" height="120" />'.format(url=product.image.name))
+            return mark_safe('<img src="{url}" width="120" height="120" />'.format(url=product.image.url))
         else:
             return "No image selected"
 

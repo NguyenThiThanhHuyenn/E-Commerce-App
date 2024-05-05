@@ -9,6 +9,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register('store', views.StoreViewSet)
+router.register(r'store-user/(?P<user_id>\d+)/', views.StoreByUserViewSet, basename='store-by-user')
 router.register('products', views.ProductViewSet, basename='product')
 router.register('product-images', views.ProductImageViewSet, basename='product-image')
 router.register('order', views.OrderViewSet, basename='order')

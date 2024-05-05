@@ -58,6 +58,21 @@ class StoreViewSet(viewsets.ModelViewSet):
 
         return [permissions.IsAuthenticated()]
 
+class StoreByUserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs.get('user_id')
+        if user_id:
+            return Store.objects.filter(user_id=user_id)
+        return Store.objects.none()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer

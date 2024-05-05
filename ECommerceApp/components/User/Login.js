@@ -33,34 +33,34 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const onLoginPress = async () => {
-  
     setLoading(true);
     try {
-      let res = await API.post(endpoints['login'], {
-        'username': username,
-        'password': password,
-        'client_id': "byXcCLRfnSCPdiaBB7vp44fcVZPb5i74gUDghBiJ",
-        'client_secret': "5T7JqcaoWv306D7QHbWz36XHqu8t0jvPS2cIQSGTMdt5590lwYkQhr89jusneGb4n2fnbSA9d5VNqIpDixGlO18Ya5rVK0Df9JSCvBnXdg9X1trY6iS7F1vCFVlQQQhw",
-        'grant_type': 'password'
-      });
+      const loginForm = new FormData();
+      loginForm.append("username", username)
+      loginForm.append('password', password)
+      loginForm.append('client_id',"byXcCLRfnSCPdiaBB7vp44fcVZPb5i74gUDghBiJ")
+      loginForm.append('client_secret', "5T7JqcaoWv306D7QHbWz36XHqu8t0jvPS2cIQSGTMdt5590lwYkQhr89jusneGb4n2fnbSA9d5VNqIpDixGlO18Ya5rVK0Df9JSCvBnXdg9X1trY6iS7F1vCFVlQQQhw")
+      loginForm.append('grant_type', "password")
+      let res = await API.post(endpoints['login'], loginForm,
+        {
+          headers: {'Content-Type': 'multipart/form-data'}
+        }
+      );
       console.info(res.data)
-    //   await AsyncStorage.setItem('token_access', res.data.access_token);
-    //   let user = await authApi(res.data.access_token).get(endpoints['current-user']);
-    //   dispatch({
-    //     "type": "login",
-    //     "payload": user.data
-    // });
-    //   navigation.navigate('HomeE');
+      await AsyncStorage.setItem('token_access', res.data.access_token);
+      let user = await authApi(res.data.access_token).get(endpoints['current-user']);
+      dispatch({
+        "type": "login",
+        "payload": user.data
+    });
+    console.log("Current User Info:", user.data);
+      navigation.navigate('HomeE');
     } catch (error) {
       Alert.alert("Error!", error.response?.data?.detail || "Đăng nhập thất bại. Vui lòng thử lại.");
-      console.error(error);
-      console.error("Error response:", error.response); 
-    console.error("Error details:", error.response?.status, error.response?.data); 
+     
     }
     setLoading(false);
   };
-
-  const onRegisterPress = () => {};
 
 
   const onFbLoginPress = async () => {
@@ -129,7 +129,7 @@ export default function LoginScreen() {
             <Text style={styles.text}>OR</Text>
             <Button
               buttonStyle={styles.loginButton}
-              onPress={() => onRegisterPress()}
+              onPress={() => navigation.navigate('Register')}
               title="Register"
             />
           </View>

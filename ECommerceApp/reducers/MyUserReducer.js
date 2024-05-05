@@ -4,13 +4,9 @@ const MyUserReducer = (currentState, action) => {
             return action.payload;
         case "logout":
             return null;
-
         default: 
             return currentState;
-
     }
 }
 
 export default MyUserReducer;
-
-

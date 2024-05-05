@@ -15,6 +15,7 @@ const HomeScreen = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [nextPageUrl, setNextPageUrl] = useState(null);
+    const [initialLoad, setInitialLoad] = useState(true);
     const productsPerPage = 20;
 
     useEffect(() => {
@@ -41,13 +42,16 @@ const HomeScreen = () => {
                     return acc;
                 }, {});
                 setProductImages(imagesMap);
+
+                // Đã tải dữ liệu lần đầu, đặt biến đánh dấu là false
+                setInitialLoad(false);
             } catch (ex) {
                 console.error(ex);
             }
         };
     
         fetchData();
-    }, []);
+    }, [initialLoad]);
 
 
     const handleCategoryPress = async (categories) => {
@@ -160,7 +164,7 @@ const HomeScreen = () => {
     const renderCategoryItem = (category) => {
         return (
             <TouchableOpacity key={category.id} style={Styles.categoryItem} onPress={() => handleCategoryPress(category)}>
-                <Image source={{ uri: category.image }} style={Styles.categoryImage} />
+                <Image source={{ uri: category.image_url }} style={Styles.categoryImage} />
                 <Text style={Styles.categoryText}>{category.name}</Text>
             </TouchableOpacity>
         );
@@ -173,18 +177,21 @@ const HomeScreen = () => {
         if (!productImage) {
             return null; 
         }
-
-        const imageUrl = productImage.image;
-
+    
+        const imageUrl = productImage.image_url;
+    
+        const handleProductPress = () => {
+            navigation.navigate('ProductDetail', { product: item });
+        };
+    
         return (
-            <TouchableOpacity key={item.id} style={AppStyles.container} onPress={() => navigation.navigate('ProductDetail', { product: item })}>
+            <TouchableOpacity key={item.id} style={AppStyles.container} onPress={handleProductPress}>
                 <Image source={{ uri: imageUrl }} style={AppStyles.images} />
                 <Text style={AppStyles.productName}>{item.product_name}</Text>
                 <Text style={AppStyles.price}>{item.price}</Text>
             </TouchableOpacity>
         );
     };
-
     const MAX_BUTTONS = 5; 
 
     const calculatePaginationRange = () => {

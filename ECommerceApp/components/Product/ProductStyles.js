@@ -43,11 +43,6 @@ export default StyleSheet.create({
     padding: 10,
     height: 'auto'
   },
-  descriptionText: {
-    fontSize: 16,
-    color: '#666',
-    lineHeight: 24
-  },
   priceContainer: {
     flexDirection: 'row',
     marginTop: 20,

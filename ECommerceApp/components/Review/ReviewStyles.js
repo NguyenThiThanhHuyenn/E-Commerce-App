@@ -30,4 +30,35 @@ export default StyleSheet.create({
         color: '#333333',
         marginBottom: 5
     },
+    containerCreateReview: {
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginBottom: 20,
+        elevation: 2,
+      },
+      ratingContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 20,
+      },
+      commentInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 20,
+        minHeight: 100,
+      },
+      submitButton: {
+        backgroundColor: '#007bff',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+      },
+      submitButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+      },
 });

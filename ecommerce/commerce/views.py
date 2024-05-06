@@ -12,7 +12,7 @@ from .serializers import UserSerializer, StoreSerializer, CategorySerializer, Pr
 # Create your views here.
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView):
-    queryset = User.objects.filter(is_active=True)
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     parser_classes = [MultiPartParser, ]
 
@@ -138,6 +138,9 @@ class ProductImageViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
 
         return [permissions.IsAuthenticated()]
+
+
+
 
 class ImageByProductId(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductImageSerializer

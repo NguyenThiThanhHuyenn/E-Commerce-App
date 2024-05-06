@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
+import ReviewStyles from './ReviewStyles';
 
 export default CreateReviewComponent = ({ onSubmit }) => {
   const [rating, setRating] = useState(0);
@@ -15,7 +16,6 @@ export default CreateReviewComponent = ({ onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    // Validate data before submission
     if (rating < 1 || rating > 5) {
       alert('Please select a rating between 1 and 5.');
       return;
@@ -24,16 +24,14 @@ export default CreateReviewComponent = ({ onSubmit }) => {
       alert('Please enter your comment.');
       return;
     }
-
-    
     onSubmit({ rating, comment });
     setRating(0);
     setComment('');
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.ratingContainer}>
+    <View style={ReviewStyles.containerCreateReview}>
+      <View style={ReviewStyles.ratingContainer}>
         {[1, 2, 3, 4, 5].map((value) => (
           <TouchableOpacity key={value} onPress={() => handleRatingChange(value)}>
             <Icon
@@ -46,14 +44,14 @@ export default CreateReviewComponent = ({ onSubmit }) => {
         ))}
       </View>
       <TextInput
-        style={styles.commentInput}
+        style={ReviewStyles.commentInput}
         placeholder="Write your comment..."
         multiline
         value={comment}
         onChangeText={handleCommentChange}
       />
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit Review</Text>
+      <TouchableOpacity style={ReviewStyles.submitButton} onPress={handleSubmit}>
+        <Text style={ReviewStyles.submitButtonText}>Submit Review</Text>
       </TouchableOpacity>
     </View>
   );

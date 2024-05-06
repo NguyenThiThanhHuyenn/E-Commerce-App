@@ -10,9 +10,27 @@ from django.db.models.functions import TruncMonth, TruncQuarter, TruncYear, Extr
 from django.db.models import Count, Sum, Q, F
 
 
-# class UserAdmin(admin.ModelAdmin):
-#     list_display = ["id", "username", "active", "store"]
-#     search_fields = ["id", "username", "store__store_name"]
+class UserAdmin(admin.ModelAdmin):
+    list_display = ["id", "username", "is_active", "role", "get_store"]
+
+    def is_active(self, obj):
+        return obj.is_active
+    is_active.boolean = True
+    is_active.short_description = 'Active'
+
+    def role(self, obj):
+        return obj.get_role_display()
+    role.short_description = 'Role'
+
+    def get_store(self, obj):
+        if obj.store:
+            return obj.store.store_name
+        else:
+            return None
+    get_store.short_description = 'Store'
+
+
+
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "parent"]
@@ -202,7 +220,7 @@ admin.site.register(Review, ReviewAdmin)
 admin.site.register(OrderDetail, OrderDetailAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment, PaymentAdmin)
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Store, StoreAdmin)
 admin.site.register(Product, ProductAdmin)

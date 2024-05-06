@@ -19,7 +19,7 @@ const Register = () => {
     address: '',
     phone_number: '', 
     role: 'customer', 
-    avatar_url: null
+    avatar: null
   });
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -29,7 +29,7 @@ const Register = () => {
   };
 
   const handleRegister = async () => {
-    if (!formData.avatar_url) {
+    if (!formData.avatar) {
       Alert.alert("Avatar is required");
       return;
     }
@@ -41,11 +41,11 @@ const Register = () => {
 
     const form = new FormData();
     Object.keys(formData).forEach(key => {
-      if (key === 'avatar_url') {
+      if (key === 'avatar') {
         let filename = formData.avatar.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
-        form.append('avatar_url', { uri: formData.avatar_url, name: filename, type });
+        form.append('avatar', { uri: formData.avatar, name: filename, type });
       } else if (key !== 'confirmPassword') {
         form.append(key, formData[key]);
       }
@@ -84,7 +84,7 @@ const Register = () => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
-      setFormData({ ...formData, avatar_url: result.assets[0].uri });
+      setFormData({ ...formData, avatar: result.assets[0].uri });
       console.log("Result: ", result);
       console.info("SelectedImage: ", result.assets[0].uri);
     }

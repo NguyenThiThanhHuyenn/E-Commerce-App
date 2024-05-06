@@ -51,7 +51,7 @@ export default StyleSheet.create({
         minHeight: 100,
       },
       submitButton: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#f0b11f',
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',

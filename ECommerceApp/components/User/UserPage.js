@@ -11,10 +11,6 @@ export default UserPage = () => {
   const [store, setStore] = useState(null); 
   const navigation = useNavigation();
 
-  if (!currentUser) {
-    return null;
-  }
-
   useEffect(() => {
     if (currentUser) {
       const fetchStore = async () => {
@@ -31,6 +27,10 @@ export default UserPage = () => {
       fetchStore();
     }
   }, [currentUser]);
+
+  if (!currentUser) {
+    return null;
+  }
 
   const handleNavigateToStore = () => {
     navigation.navigate('Store', { storeId: store.id });

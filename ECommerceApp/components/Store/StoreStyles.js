@@ -73,7 +73,6 @@ export default StyleSheet.create({
   containerCreateStore: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 20,
     backgroundColor: 'white'
   },
@@ -83,13 +82,13 @@ export default StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-    width: '100%'
+    width: '100%',
   },
   pickImageButton: {
     backgroundColor: '#f0b11f',
     padding: 10,
     borderRadius: 5,
-    width: '100%',
+    width: '40%',
     alignItems: 'center',
     marginBottom: 10
   },
@@ -118,9 +117,24 @@ export default StyleSheet.create({
     flexDirection: 'row'
   },
   buttonForSeller:{
-    marginLeft: '55%'
+    flexDirection: 'row'
   },
   buttonUpdate:{
-    marginBottom: 10,
+    marginBottom: 20,
+    marginRight: 20
+  },
+  containerUpdateStore:{
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: 'white'
+  },
+  buttonSubmitUpdate:{
+    backgroundColor: '#f0b11f',
+    padding: 10,
+    borderRadius: 5,
+    width: '40%',
+    alignItems: 'center',
+    marginBottom: 10
   }
 });

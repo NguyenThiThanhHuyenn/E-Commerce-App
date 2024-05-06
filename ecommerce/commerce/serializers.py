@@ -8,7 +8,7 @@ class UserSerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar', 'address', 'phone_number', 'role', 'new_password', 'avatar_url']
+        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar', 'address', 'phone_number', 'role', 'new_password', 'avatar_url', 'is_active']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -16,6 +16,10 @@ class UserSerializer(HyperlinkedModelSerializer):
     def create(self, validated_data):
         user = User(**validated_data)
         user.set_password(validated_data['password'])
+        if user.role == User.SELLER_ROLE:
+            user.is_active = False
+        else:
+            user.is_active = True
         user.save()
         return user
 
@@ -69,6 +73,7 @@ class ProductImageSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = ProductImage
         fields = ['id', 'product', 'image', 'image_url', 'created_at', 'updated_at']
+
 
     def get_image_url(self, obj):
         if obj.image:

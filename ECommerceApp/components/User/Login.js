@@ -56,7 +56,7 @@ export default function LoginScreen() {
     console.log("Current User Info:", user.data);
       navigation.navigate('HomeE');
     } catch (error) {
-      Alert.alert("Error!", error.response?.data?.detail || "Đăng nhập thất bại. Vui lòng thử lại.");
+      Alert.alert("Oops!", error.response?.data?.detail ||"Please check your username and password. If you have a business account, please wait for confirmation from the system. Thank you.");
      
     }
     setLoading(false);

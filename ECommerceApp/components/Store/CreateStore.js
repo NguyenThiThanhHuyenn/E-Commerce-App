@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import MyContext from '../../configs/MyContext';
 import API, { endpoints, HOST } from "../../configs/API";
-import * as ImagePicker from 'expo-image-picker';
 import styles from './StoreStyles'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';

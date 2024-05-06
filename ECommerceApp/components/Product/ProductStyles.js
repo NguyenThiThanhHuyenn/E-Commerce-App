@@ -59,7 +59,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    backgroundColor: '#2cd18a',
+    backgroundColor: '#f0b11f',
     padding: 10,
     borderRadius: 5,
   },
@@ -83,7 +83,48 @@ export default StyleSheet.create({
     color: 'gray',
     marginBottom: 20
   
-  }
+  },
+  inputContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: 'white'
+    
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    width: '100%',
+  },
+  addButton: {
+    backgroundColor: '#f0b11f',
+    padding: 15,
+    borderRadius: 5,
+    marginTop: 20,
+    width: '50%',
+    alignSelf: 'center',
+    marginVertical: '100%'
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  buttonPicker:{
+    backgroundColor: '#f0b11f',
+    padding: 10,
+    borderRadius: 5,
+    width: '40%',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  pickImageButtonText: {
+    color: 'white',
+    fontWeight: 'bold'
+  },
 });
 
 

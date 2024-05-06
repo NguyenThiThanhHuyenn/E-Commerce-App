@@ -18,7 +18,9 @@ import SearchResultScreen from "../components/Search/SearchResults";
 import ProductByCategory from "../components/Product/ProductByCategory";
 import Store from "../components/Store/Store";
 import CreateStoreScreen from "../components/Store/CreateStore";
-
+import UpdateStoreScreen from "../components/Store/UpdateStore";
+import AddProductScreen from "../components/Product/AddProduct";
+import UpdateProductScreen from "../components/Product/UpdateProduct";
 
 
 const Stack = createStackNavigator();
@@ -35,11 +37,14 @@ function MainStackNavigator() {
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="UserPage" component={UserPage} options={{ headerShown: false }}/>
         <Stack.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/>
+        <Stack.Screen name="AddProduct" component={AddProductScreen} options={() => ({title: 'Add product'})}/>
+        <Stack.Screen name="UpdateProduct" component={UpdateProductScreen} options={() => ({title: 'Update product'})}/>
         <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="SearchResults" component={SearchResultScreen} options={() => ({title: ''})}/>
         <Stack.Screen name="ProductByCategory" component={ProductByCategory} options={() => ({title: ''})}/>
         <Stack.Screen name="Store" component={Store} options={() => ({title: ''})}/>
-        <Stack.Screen name="CreateStore" component={CreateStoreScreen} options={() => ({title: 'Create Store'})}/>
+        <Stack.Screen name="CreateStore" component={CreateStoreScreen} options={() => ({title: 'Create store'})}/>
+        <Stack.Screen name="UpdateStore" component={UpdateStoreScreen} options={() => ({title: 'Update store'})}/>
       </Stack.Navigator>
     );
   }
@@ -60,7 +65,7 @@ function MainStackNavigator() {
             <DrawerItem label="Search" onPress={() => navigation.navigate('Search')}/>
             {user===null? <>
               <DrawerItem label="Log in" onPress={() => navigation.navigate('Login')}/>
-              <DrawerItem label="Register" onPress={() => navigation.navigate('Register')}/>
+              <DrawerItem label="Sign up" onPress={() => navigation.navigate('Register')}/>
             </>:<>
                 <DrawerItem label={user.username} onPress={() => navigation.navigate('UserPage')}/>
                 <DrawerItem label="Log out" onPress={handleLogout}/>

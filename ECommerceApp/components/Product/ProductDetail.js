@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { TouchableOpacity, View, Text, Image, ScrollView, useWindowDimensions } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { TouchableOpacity, View, Text, Image, ScrollView, useWindowDimensions, Alert } from "react-native";
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import API, { endpoints } from "../../configs/API";
@@ -8,14 +8,21 @@ import HTML from 'react-native-render-html';
 import ReviewComponent from "../Review/ReviewComponent";
 import { Icon } from 'react-native-elements';
 import { useNavigation } from "@react-navigation/native";
+import MyContext from "../../configs/MyContext";
+import CreateReviewComponent from "../Review/CreateReviewComponent";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const ProductDetail = ({ route }) => {
-  const { product } = route.params;
+  const [currentUser] = useContext(MyContext);
+  const { product, store } = route.params;
   const windowWidth = useWindowDimensions().width;
   const [productImages, setProductImages] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(null);
   const [storeName, setStoreName] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   const navigation = useNavigation();
 
@@ -33,7 +40,6 @@ const ProductDetail = ({ route }) => {
     const fetchReviews = async () => {
       try {
         const apiUrl = endpoints['reviews-by-product'].replace('{product_id}', product.id);
-        // console.log('API URL:', apiUrl); 
         const response = await API.get(apiUrl);
         const reviewsWithUserDetails = await Promise.all(response.data.map(async review => {
           const userResponse = await API.get(`/user/${review.user}/`);
@@ -76,11 +82,56 @@ const ProductDetail = ({ route }) => {
     navigation.navigate('Store', { storeId: product.store});
   };
 
-  
 
+  const handleAddReview = async (reviewData) => {
+    try {
+      setLoading(true);
+      
+      const formData = new FormData();
+      formData.append('user', currentUser.id); 
+      formData.append('product', product.id); 
+      formData.append('rating', reviewData.rating); 
+      formData.append('comment', reviewData.comment);
+      
+      const accessToken = await AsyncStorage.getItem('token_access'); 
+    
+      const response = await API.post(endpoints['review'], formData, { 
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    
+      if (response.status === 201) {
+        const newReview = response.data;
+        const newReviewList = [...reviews, newReview];
+        setReviews(newReviewList);
+        
+        const userResponse = await API.get(`/user/${newReview.user}/`);
+        const userDetails = userResponse.data;
+        
+        const updatedReview = { ...newReview, username: userDetails.username };
+        const updatedReviewList = [...reviews, updatedReview];
+        setReviews(updatedReviewList);
+        
+        Alert.alert("Success", "Review added successfully");
+      }
+    } catch (error) {
+      console.error('Error adding review:', error);
+      Alert.alert('Error', 'Failed to add review. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isStoreOwner = currentUser && currentUser.id && store && store.user.includes(`/user/${currentUser.id}/`);
+
+  
+  
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.carouselContainer}>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.container} >
+        <View style={styles.carouselContainer}>
         <Carousel 
           data={productImages}
           renderItem={renderItem}
@@ -94,6 +145,15 @@ const ProductDetail = ({ route }) => {
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{product.product_name}</Text>
         <TouchableOpacity onPress={() => handleToStore()}><Text style={styles.storeName}><Icon name="storefront-outline" type="ionicon"/> {storeName}</Text></TouchableOpacity>
+        <View >
+            {isStoreOwner && (
+              <View style={styles.buttonForSeller}>
+                <TouchableOpacity style={styles.buttonUpdate} onPress={() => navigation.navigate('UpdateProduct', { product: product })}>
+                  <Icon name="pencil-outline" type="ionicon"/>
+                </TouchableOpacity>
+              </View>
+            )}
+            </View>
         
         {averageRating && (
           <Text style={styles.averageRating}>{averageRating ? `${averageRating}/5.0` : '0.0/5.0'}<Icon  name='star' size={20} type='ionicon' color={'#b89d3b'}/></Text> 
@@ -114,6 +174,7 @@ const ProductDetail = ({ route }) => {
       {/* {console.info('Reviews:', reviews)} */}
       <View>
       <Text style={styles.title}>Customer Reviews</Text>
+      {currentUser && <CreateReviewComponent onSubmit={handleAddReview} />}
         {reviews && reviews.length > 0 ? (
           reviews.map((item) => (
             <ReviewComponent
@@ -128,6 +189,8 @@ const ProductDetail = ({ route }) => {
           <Text>No reviews available</Text>
         )}
       </View>
+      </View>
+      
     </ScrollView>
   );
 };

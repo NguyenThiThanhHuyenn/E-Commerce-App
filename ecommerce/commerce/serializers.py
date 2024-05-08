@@ -80,22 +80,31 @@ class ProductImageSerializer(HyperlinkedModelSerializer):
             return obj.image.url
         return None
 
-class OrderSerializer(ModelSerializer):
+
+class ProductVariantSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField()
+
+    class Meta:
+        model = ProductVariant
+        fields = ['id', 'size', 'color', 'product_id']
+
+
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['id', 'user', 'store', 'order_date', 'total_amount', 'payment_method', 'order_status']
 
+class OrderDetailSerializer(serializers.ModelSerializer):
+    product_name = ProductSerializer(source='product', read_only=True)
 
-class OrderDetailSerializer(ModelSerializer):
     class Meta:
         model = OrderDetail
-        fields = ['id', 'order', 'product', 'quantity', 'price', 'order']
+        fields = ['id', 'order', 'store', 'product', 'quantity', 'price', 'note', 'product_name']
 
-class PaymentSerializer(ModelSerializer):
+class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = ['id', 'order', 'payment_method', 'amount', 'payment_date', 'transaction_id']
-
 
 
 

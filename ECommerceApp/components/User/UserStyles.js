@@ -204,7 +204,32 @@ const styles = StyleSheet.create({
     height: 50, 
     borderRadius: 10, 
     marginRight: 10,
-  }
+  },
+  completedOrdersContainer: {
+    width:"80%",
+    marginTop: 100,
+    marginBottom: "100%"
+
+  },
+  completedOrdersTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  completedOrderItem: {
+    backgroundColor: '#f0f0f0',
+    padding: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  orderTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  orderInfo: {
+    fontSize: 14,
+  },
 
 });
 export default styles;

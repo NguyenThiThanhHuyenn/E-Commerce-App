@@ -5,11 +5,15 @@ import MyContext from '../../configs/MyContext';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import API, { endpoints } from "../../configs/API";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { format } from 'date-fns';
 
 export default UserPage = () => {
   const [currentUser] = useContext(MyContext);
   const [store, setStore] = useState(null); 
+  const [completedOrders, setCompletedOrders] = useState([]);
   const navigation = useNavigation();
+
 
   useEffect(() => {
     if (currentUser) {
@@ -17,14 +21,28 @@ export default UserPage = () => {
         try {
           const response = await API.get(endpoints['store-by-user'].replace('{user_id}', currentUser.id));
           setStore(response.data.results[0]);
-          console.log("Response data:", response.data.results);
         } catch (error) {
           console.error('Error fetching store:', error);
-          console.error('Error response:', error.response); 
-          console.error('Error details:', error.response?.status, error.response?.data);
         }
       };
+
+      const fetchCompletedOrders = async () => {
+        try {
+          const accessToken = await AsyncStorage.getItem('token_access');
+          const response = await API.get(endpoints['order-by-user'].replace('{user_id}', currentUser.id), {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+          const completedOrders = response.data.filter(order => order.order_status === 'completed');
+          setCompletedOrders(completedOrders);
+        } catch (error) {
+          console.error('Error fetching completed orders:', error);
+        }
+      };
+
       fetchStore();
+      fetchCompletedOrders();
     }
   }, [currentUser]);
 
@@ -36,29 +54,22 @@ export default UserPage = () => {
     navigation.navigate('Store', { storeId: store.id });
   };
 
-  const renderCreateStoreButton = () => {
-    if (currentUser.role === 'seller') {
-      return (
-        <TouchableOpacity style={styles.createStoreButton} onPress={handleCreateStore}>
-          <Icon name='add-circle-outline' type='ionicon' color={'white'} size={15}/>
-          <Text style={styles.createStoreButtonText}>Create Store</Text>
-        </TouchableOpacity>
-      );
-    } else {  
-      return null;
-    }
-  };
-
-  const handleCreateStore = () => {
-    navigation.navigate('CreateStore');
+  const renderCompletedOrders = () => {
+    return completedOrders.map(order => (
+      <TouchableOpacity key={order.id} style={styles.completedOrderItem}>
+        {/* Hiển thị thông tin đơn hàng */}
+        <Text style={styles.orderTitle}>Order: {format(new Date(order.order_date), 'dd/MM/yyyy HH:mm')}</Text>
+        <Text style={styles.orderInfo}>Total Amount: {order.total_amount} VND</Text>
+        {/* Thêm các thông tin khác của đơn hàng nếu cần */}
+      </TouchableOpacity>
+    ));
   };
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.containerUserPage}>
         <Image source={{ uri: currentUser.avatar_url }} style={styles.avatar} />
         <Text style={styles.userFullName}>{currentUser.first_name} {currentUser.last_name}</Text>
-        {renderCreateStoreButton()}
 
         {store && (
           <TouchableOpacity style={styles.storeItem} onPress={handleNavigateToStore}>
@@ -67,10 +78,14 @@ export default UserPage = () => {
           </TouchableOpacity>
         )}
 
-        {/* <Text style={styles.userInfo}>Username: {currentUser.username}</Text>
-        <Text style={styles.userInfo}>Email: {currentUser.email}</Text>
-        <Text style={styles.userInfo}>Address: {currentUser.address}</Text>
-        <Text style={styles.userInfo}>Phone: {currentUser.phone_number}</Text> */}
+        {/* Hiển thị danh sách các đơn hàng đã hoàn thành */}
+        {completedOrders.length > 0 && (
+          <View style={styles.completedOrdersContainer}>
+            <Text style={styles.completedOrdersTitle}>Completed Orders</Text>
+            {renderCompletedOrders()}
+          </View>
+        )}
+
         
       </View>
     </ScrollView>

@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from django.contrib.auth.models import Permission
 from django.template.response import TemplateResponse
 from django.utils.html import mark_safe
@@ -75,6 +76,10 @@ class ProductImageInline(admin.TabularInline):
         else:
             return "No image selected"
 
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1
+
 class ProductForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditorUploadingWidget)
     class Meta:
@@ -84,7 +89,7 @@ class ProductForm(forms.ModelForm):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ["id", "product_name", "category", "store", "price", "stock"]
     search_fields = ["product_name", "category__name", "store__store_name"]
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline, ProductVariantInline]
     form = ProductForm
     readonly_fields = ['get_average_rating']
 
@@ -99,123 +104,128 @@ class ProductAdmin(admin.ModelAdmin):
     average_rating.short_description = 'Average Rating'
 
 class CommerceAppAdminSite(admin.AdminSite):
-    site_header = 'HE THONG QUAN LY SAN GIAO DICH THUONG MAI DIEN TU'
+    site_header = 'HỆ THỐNG QUẢN LÝ SÀN GIAO DỊCH THƯƠNG MẠI ĐIỆN TỬ'
 
     def get_urls(self):
         return [
             path('commerce-stats/', self.commerce_stats)
-
         ] + super().get_urls()
 
     def commerce_stats(self, request):
-        if request.user.role == 'seller':
-            # Người bán
-            monthly_sales = Order.objects.filter(store__user=request.user, order_status='completed').annotate(
-                month=TruncMonth('order_date')).values(
-                'month').annotate(total_sales=Sum('total_amount')).order_by('month')
+        total_stores = Store.objects.count()
+        active_stores = Store.objects.filter(active=True).count()
+        total_customers = User.objects.filter(role=User.CUSTOMER_ROLE).count()
+        total_sellers = User.objects.filter(role=User.SELLER_ROLE).count()
+        unconfirmed_sellers = User.objects.filter(role=User.SELLER_ROLE, is_active=False).count()
 
-            quarterly_sales = Order.objects.filter(store__user=request.user, order_status='completed').annotate(
-                quarter=TruncQuarter('order_date')).values('quarter').annotate(
-                total_sales=Sum('total_amount')).order_by('quarter')
+        monthly_total_sales = Order.objects.filter(order_status='completed').annotate(
+            month=ExtractMonth('order_date')
+        ).values('month').annotate(total_sales=Sum('total_amount')).order_by('month')
 
-            yearly_sales = Order.objects.filter(store__user=request.user, order_status='completed').annotate(
-                year=TruncYear('order_date')).values(
-                'year').annotate(total_sales=Sum('total_amount')).order_by('year')
+        monthly_store_sales = OrderDetail.objects.filter(order__order_status='completed').annotate(
+            month=ExtractMonth('order__order_date'),
+            store_name=F('product__store__store_name')
+        ).values('month', 'store_name').annotate(total_sales=Sum('price')).order_by('month')
 
-            stock_products = Product.objects.filter(store__user=request.user).annotate(
-                total_sold=Sum('orderdetail__quantity')
-            ).annotate(
-                stocks=F('stock') - F('total_sold')
-            )
+        monthly_paid_orders = Order.objects.filter(order_status='completed').annotate(
+            month=ExtractMonth('order_date'),
+            store_name=F('store__store_name')
+        ).values('month', 'store_name').annotate(total_paid_orders=Count('id')).order_by('month')
 
-            return TemplateResponse(request, 'admin/seller-commerce-stats.html', {
-                'monthly_sales': monthly_sales,
-                'quarterly_sales': quarterly_sales,
-                'yearly_sales': yearly_sales,
-                'stock_products': stock_products
-            })
-        elif request.user.is_superuser:
-            # Người quản trị sàn giao dịch
-            store_count = Store.objects.count()
-            active_store_count = Store.objects.filter(active=True).count()
-            # Tính số lượng sản phẩm hoạt động cho mỗi cửa hàng
-            store_active_products = []
-            for store in Store.objects.all():
-                active_product_count = store.product_set.filter(active=True).count()
-                store_active_products.append({
-                    'store_name': store.store_name,
-                    'active_product_count': active_product_count
-                })
-            store_sales = Store.objects.annotate(
-                monthly_sales=Sum('order__total_amount', filter=Q(order__order_status='completed',
-                                                                  order__order_date__month=ExtractMonth(
-                                                                      'order__order_date'))),
-                quarterly_sales=Sum('order__total_amount', filter=Q(order__order_status='completed',
-                                                                    order__order_date__quarter=ExtractQuarter(
-                                                                        'order__order_date'))),
-                yearly_sales=Sum('order__total_amount', filter=Q(order__order_status='completed',
-                                                                 order__order_date__year=ExtractYear(
-                                                                     'order__order_date')))
-            )
+        most_paid_orders_store = monthly_paid_orders.order_by('-total_paid_orders').first()
 
-            total_monthly_sales = Order.objects.filter(order_status='completed').annotate(
-                month=TruncMonth('order_date')).values(
-                'month').annotate(total_sales=Sum('total_amount')).order_by('month')
+        lowest_sales_store = monthly_store_sales.order_by('total_sales').first()
 
-            total_quarterly_sales = Order.objects.filter(order_status='completed').annotate(
-                quarter=TruncQuarter('order_date')).values('quarter').annotate(
-                total_sales=Sum('total_amount')).order_by('quarter')
+        quarterly_total_sales = Order.objects.filter(order_status='completed').annotate(
+            quarter=ExtractQuarter('order_date')
+        ).values('quarter').annotate(total_sales=Sum('total_amount')).order_by('quarter')
 
-            total_yearly_sales = Order.objects.filter(order_status='completed').annotate(
-                year=TruncYear('order_date')).values(
-                'year').annotate(total_sales=Sum('total_amount')).order_by('year')
+        quarterly_store_sales = OrderDetail.objects.filter(order__order_status='completed').annotate(
+            quarter=ExtractQuarter('order__order_date'),
+            store_name=F('product__store__store_name')
+        ).values('quarter', 'store_name').annotate(total_sales=Sum('price')).order_by('quarter')
 
-            return TemplateResponse(request, 'admin/admin-commerce-stats.html', {
-                'store_sales': store_sales,
-                'total_monthly_sales': total_monthly_sales,
-                'total_quarterly_sales': total_quarterly_sales,
-                'total_yearly_sales': total_yearly_sales,
-                'store_count': store_count,
-                'active_store_count': active_store_count,
-                'store_active_products': store_active_products
+        quarterly_paid_orders = Order.objects.filter(order_status='completed').annotate(
+            quarter=ExtractQuarter('order_date'),
+            store_name=F('store__store_name')
+        ).values('quarter', 'store_name').annotate(total_paid_orders=Count('id')).order_by('quarter')
 
-            })
+        most_paid_orders_store_quarter = quarterly_paid_orders.order_by('-total_paid_orders').first()
 
+        lowest_sales_store_quarter = quarterly_store_sales.order_by('total_sales').first()
 
+        yearly_total_sales = Order.objects.filter(order_status='completed').annotate(
+            year=ExtractYear('order_date')
+        ).values('year').annotate(total_sales=Sum('total_amount')).order_by('year')
 
+        yearly_store_sales = OrderDetail.objects.filter(order__order_status='completed').annotate(
+            year=ExtractYear('order__order_date'),
+            store_name=F('product__store__store_name')
+        ).values('year', 'store_name').annotate(total_sales=Sum('price')).order_by('year')
 
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ["id", "user", "store", "order_date", "total_amount", "payment_method", "order_status"]
-    search_fields = ["user__username", "store__store_name", "order_status"]
-    list_filter = ["order_status", "payment_method"]
+        yearly_paid_orders = Order.objects.filter(order_status='completed').annotate(
+            year=ExtractYear('order_date'),
+            store_name=F('store__store_name')
+        ).values('year', 'store_name').annotate(total_paid_orders=Count('id')).order_by('year')
+
+        most_paid_orders_store_year = yearly_paid_orders.order_by('-total_paid_orders').first()
+
+        lowest_sales_store_year = yearly_store_sales.order_by('total_sales').first()
+
+        context = {
+            'total_stores': total_stores,
+            'active_stores': active_stores,
+            'total_customers': total_customers,
+            'total_sellers': total_sellers,
+            'unconfirmed_sellers': unconfirmed_sellers,
+            'monthly_total_sales': monthly_total_sales,
+            'monthly_store_sales': monthly_store_sales,
+            'monthly_paid_orders': monthly_paid_orders,
+            'most_paid_orders_store': most_paid_orders_store,
+            'lowest_sales_store': lowest_sales_store,
+            'quarterly_total_sales': quarterly_total_sales,
+            'quarterly_store_sales': quarterly_store_sales,
+            'quarterly_paid_orders': quarterly_paid_orders,
+            'most_paid_orders_store_quarter': most_paid_orders_store_quarter,
+            'lowest_sales_store_quarter': lowest_sales_store_quarter,
+            'yearly_total_sales': yearly_total_sales,
+            'yearly_store_sales': yearly_store_sales,
+            'yearly_paid_orders': yearly_paid_orders,
+            'most_paid_orders_store_year': most_paid_orders_store_year,
+            'lowest_sales_store_year': lowest_sales_store_year,
+        }
+
+        return TemplateResponse(request, 'admin/admin-commerce-stats.html', context)
 
 
 
 class OrderDetailAdmin(admin.ModelAdmin):
-    list_display = ["id", "order", "product", "quantity", "price"]
-    search_fields = ["order__id", "product__product_name"]
-
-
+    list_display = ['id', 'order', 'store', 'product', 'quantity', 'price']
+    search_fields = ['order__user__username', 'product__product_name']
+    readonly_fields = ['order', 'store', 'product', 'quantity', 'price']
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ["id", "order", "payment_method", "amount", "payment_date"]
-    search_fields = ["order__id", "payment_method"]
-    list_filter = ["payment_method"]
+    list_display = ['id', 'order', 'payment_method', 'amount', 'payment_date']
+    list_filter = ['payment_method']
+    search_fields = ['order__user__username', 'payment_method']
+    date_hierarchy = 'payment_date'
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'store', 'order_date', 'total_amount', 'payment_method', 'order_status']
+    list_filter = ['order_status', 'payment_method']
+    search_fields = ['user__username', 'order_status']
+    date_hierarchy = 'order_date'
 
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "product", "store", "rating", "comment", "created_at", "active"]
     search_fields = ["user__username", "product__product_name", "store__store_name"]
     list_filter = ["active"]
 
-# admin_site = CommerceAppAdminSite('ecommerce')
-# admin_site.register(Review, ReviewAdmin)
-# admin_site.register(OrderDetail, OrderDetailAdmin)
-# admin_site.register(Order, OrderAdmin)
-# admin_site.register(Payment, PaymentAdmin)
-# admin.site.register(User, UserAdmin)
-# admin_site.register(Category, CategoryAdmin)
-# admin_site.register(Store, StoreAdmin)
-# admin_site.register(Product, ProductAdmin
+
+
+
+
+admin.site = CommerceAppAdminSite('ecommerce')
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(OrderDetail, OrderDetailAdmin)
 admin.site.register(Order, OrderAdmin)

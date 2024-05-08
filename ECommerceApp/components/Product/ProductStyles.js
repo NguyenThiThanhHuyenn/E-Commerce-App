@@ -9,7 +9,8 @@ export default StyleSheet.create({
   },
   carouselContainer: {
     height: 'auto',
-    marginHorizontal: 45,
+    width:'100%',
+    alignItems:'center'
 
     
   },
@@ -20,8 +21,8 @@ export default StyleSheet.create({
     height: '100%',
   },
   imageContainer: {
-    width: viewportWidth,
-    height: 250,
+    width: '100%',
+    height: 450,
     
   
   },
@@ -125,6 +126,56 @@ export default StyleSheet.create({
     color: 'white',
     fontWeight: 'bold'
   },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20
+  },
+  quantityText: {
+    marginRight: 10,
+    fontSize: 16,
+    color: 'gray'
+  },
+  quantityInput: {
+    width: 50,
+    height: 30,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#ccc',
+    textAlign: 'center',
+  },
+    similarProductsContainer: {
+      marginTop: 20,
+      paddingHorizontal: 10,
+    },
+    similarProductsTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    similarProductItem: {
+      marginRight: 10,
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderRadius: 5,
+      padding: 10,
+      width: 150,
+      backgroundColor: '#fff',
+    },
+    similarProductImage: {
+      width: '100%',
+      height: 100,
+      resizeMode: 'cover',
+      marginBottom: 10,
+    },
+    similarProductTitle: {
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    similarProductPrice: {
+      fontSize: 12,
+      color: 'green',
+    },
 });
 
 

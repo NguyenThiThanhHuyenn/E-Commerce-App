@@ -94,11 +94,17 @@ class ProductImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    size = models.CharField(max_length=50, null=True, blank=True)
+    color = models.CharField(max_length=50, null=True, blank=True)
 
+    def __str__(self):
+        return f"Product Variant - ID: {self.id}, Product ID: {self.product_id}"
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, default=None)
     order_date = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -121,19 +127,19 @@ class Order(models.Model):
     order_status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES)
 
 
+
 class OrderDetail(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, default=None)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, default=None)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-
-
-
+    note = models.TextField(blank=True, null=True)
 
 class Payment(models.Model):
     order = models.OneToOneField(Order, related_name='payment', on_delete=models.CASCADE)
-    payment_method = models.CharField(max_length=20, choices=Order.PAYMENT_METHOD_CHOICES)
+    payment_method = models.CharField(max_length=20)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
-    transaction_id = models.CharField(max_length=255, null=True, blank=True)  # ID giao dịch từ các cổng thanh toán
+    transaction_id = models.CharField(max_length=255, null=True, blank=True)
 

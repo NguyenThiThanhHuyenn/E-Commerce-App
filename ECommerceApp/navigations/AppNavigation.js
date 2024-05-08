@@ -20,7 +20,8 @@ import Store from "../components/Store/Store";
 import CreateStoreScreen from "../components/Store/CreateStore";
 import UpdateStoreScreen from "../components/Store/UpdateStore";
 import AddProductScreen from "../components/Product/AddProduct";
-import UpdateProductScreen from "../components/Product/UpdateProduct";
+import CartScreen from "../components/OrderAndPayment/Cart";
+import StatsScreen from "../components/Stats/Stats";
 
 
 const Stack = createStackNavigator();
@@ -38,13 +39,14 @@ function MainStackNavigator() {
         <Stack.Screen name="UserPage" component={UserPage} options={{ headerShown: false }}/>
         <Stack.Screen name="ProductDetail" component={ProductDetail} options={{ headerShown: false }}/>
         <Stack.Screen name="AddProduct" component={AddProductScreen} options={() => ({title: 'Add product'})}/>
-        <Stack.Screen name="UpdateProduct" component={UpdateProductScreen} options={() => ({title: 'Update product'})}/>
         <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="SearchResults" component={SearchResultScreen} options={() => ({title: ''})}/>
         <Stack.Screen name="ProductByCategory" component={ProductByCategory} options={() => ({title: ''})}/>
         <Stack.Screen name="Store" component={Store} options={() => ({title: ''})}/>
         <Stack.Screen name="CreateStore" component={CreateStoreScreen} options={() => ({title: 'Create store'})}/>
         <Stack.Screen name="UpdateStore" component={UpdateStoreScreen} options={() => ({title: 'Update store'})}/>
+        <Stack.Screen name="Cart" component={CartScreen} options={() => ({title: ''})}/>
+        <Stack.Screen name="Stats" component={StatsScreen} options={() => ({title: 'Statistics'})}/>
       </Stack.Navigator>
     );
   }
@@ -68,6 +70,7 @@ function MainStackNavigator() {
               <DrawerItem label="Sign up" onPress={() => navigation.navigate('Register')}/>
             </>:<>
                 <DrawerItem label={user.username} onPress={() => navigation.navigate('UserPage')}/>
+                <DrawerItem label="Cart" onPress={() => navigation.navigate('Cart')}/>
                 <DrawerItem label="Log out" onPress={handleLogout}/>
             </>}
         </DrawerContentScrollView>
@@ -83,12 +86,7 @@ function MainStackNavigator() {
       <MyContext.Provider value={[user, dispatch]}>
         <NavigationContainer>
         <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
-            <Drawer.Screen name="Home" component={MainStackNavigator} options={{title: 'Ecommerce', 
-            headerRight: () => (
-              <TouchableOpacity onPress={() => console.log("cart")}>
-                <Icon name="cart-outline" type='ionicon' style={AppStyles.cartButton}/> 
-              </TouchableOpacity>
-            ), }}/>
+            <Drawer.Screen name="Home" component={MainStackNavigator} options={{title: 'Ecommerce'}}/>
             </Drawer.Navigator>   
         </NavigationContainer>
       </MyContext.Provider>

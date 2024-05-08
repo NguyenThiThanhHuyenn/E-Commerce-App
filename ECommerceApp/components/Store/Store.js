@@ -169,7 +169,7 @@ const Store = ({ route }) => {
                 <TouchableOpacity style={styles.buttonUpdate} onPress={() => navigation.navigate('UpdateStore', { storeId: storeId })}>
                   <Icon name="pencil-outline" type="ionicon"/>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonUpdate}>
+                <TouchableOpacity style={styles.buttonUpdate} onPress={()=> navigation.navigate('Stats')}>
                 <Icon name="stats-chart-outline" type="ionicon"/> 
                 </TouchableOpacity>
               </View>

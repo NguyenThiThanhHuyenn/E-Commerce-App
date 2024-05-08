@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const ImageViewer = ({ images, onDeleteImage }) => {
+const ImageViewer = ({ images, tempImages, onDeleteImage }) => {
   const handleDeleteImage = (index) => {
     onDeleteImage(index);
   };
 
+  // Kiểm tra nếu displayedImages không phải là undefined trước khi sử dụng
+  const displayedImages = (images && images.length > 0) ? images : tempImages;
+
   return (
     <View style={styles.imageContainer}>
-      {images.map((image, index) => (
+      {displayedImages && displayedImages.map((image, index) => (
         <TouchableOpacity key={index} onLongPress={() => handleDeleteImage(index)}>
           <Image source={{ uri: image }} style={styles.image} />
         </TouchableOpacity>
@@ -16,6 +19,7 @@ const ImageViewer = ({ images, onDeleteImage }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   imageContainer: {

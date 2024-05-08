@@ -1,3 +1,4 @@
+
 from django.db.models import Q, Sum, Count
 from datetime import datetime
 from django.http import HttpResponse
@@ -8,7 +9,9 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 
 from .models import *
-from .serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ProductImageSerializer, ReviewSerializer, OrderSerializer, OrderDetailSerializer, PaymentSerializer
+from .serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ProductImageSerializer,  ReviewSerializer, OrderSerializer, OrderDetailSerializer, PaymentSerializer, ProductVariantSerializer
+
+
 # Create your views here.
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView):
@@ -141,6 +144,19 @@ class ProductImageViewSet(viewsets.ModelViewSet):
 
 
 
+class ProductVariantViewSet(viewsets.ModelViewSet):
+    queryset = ProductVariant.objects.all()
+    serializer_class = ProductVariantSerializer
+
+class ProductvariantsByProductViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ProductVariantSerializer
+
+    def get_queryset(self):
+        product_id = self.kwargs.get('product_id')
+        if product_id:
+            return ProductVariant.objects.filter(product_id=product_id)
+        return ProductVariant.objects.none()
+
 
 class ImageByProductId(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductImageSerializer
@@ -172,6 +188,16 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
         return [permissions.IsAuthenticated()]
 
+
+class UserOrderViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request):
+        user = request.user
+        orders = Order.objects.filter(user=user)
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+
 class ReviewsByProductViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]  # Có thể điều chỉnh quyền truy cập ở đây
 
@@ -191,94 +217,130 @@ class ReviewsByStoreViewSet(viewsets.ViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated()]
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class OrderDetailViewSet(viewsets.ModelViewSet):
     queryset = OrderDetail.objects.all()
     serializer_class = OrderDetailSerializer
-    permission_classes = [permissions.IsAuthenticated()]
+    permission_classes = [permissions.IsAuthenticated]
+
+class PendingOrderDetailViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request):
+        user = request.user
+        pending_order_details = OrderDetail.objects.filter(order__user=user, order__order_status='pending')
+        serializer = OrderDetailSerializer(pending_order_details, many=True)
+        return Response(serializer.data)
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
-    permission_classes = [permissions.IsAuthenticated()]
+    permission_classes = [permissions.IsAuthenticated]
+
+
 
 class SellerStatisticsViewSet(viewsets.ViewSet):
-    permission_classes = [permissions.IsAuthenticated()]
-
     def list(self, request):
-        user = request.user  # Người dùng đang thực hiện yêu cầu
-        store = Store.objects.get(user=user)  # Cửa hàng của người bán
+        user = request.user
+        store = Store.objects.filter(user=user).first()
 
-        # Thống kê doanh thu từng mặt hàng theo tháng, quý và năm
         monthly_revenue = self.get_revenue_by_period(store, 'month')
+        monthly_product_stats = self.get_product_stats(store, 'month')
+        highest_revenue_product_month = self.get_highest_revenue_product(store, 'month')
+        lowest_revenue_product_month = self.get_lowest_revenue_product(store, 'month')
+
         quarterly_revenue = self.get_revenue_by_period(store, 'quarter')
+        quarterly_product_stats = self.get_product_stats(store, 'quarter')
+        highest_revenue_product_quarter = self.get_highest_revenue_product(store, 'quarter')
+        lowest_revenue_product_quarter = self.get_lowest_revenue_product(store, 'quarter')
+
         yearly_revenue = self.get_revenue_by_period(store, 'year')
+        yearly_product_stats = self.get_product_stats(store, 'year')
+        highest_revenue_product_year = self.get_highest_revenue_product(store, 'year')
+        lowest_revenue_product_year = self.get_lowest_revenue_product(store, 'year')
 
-        # Tổng doanh thu cửa hàng của người bán
-        total_revenue = OrderDetail.objects.filter(order__store=store).aggregate(total=Sum('price'))['total']
-
-        # Số lượng bán ra của từng mặt hàng
-        product_sales = OrderDetail.objects.filter(order__store=store).values('product__product_name').annotate(
-            total_sales=Sum('quantity'))
-
-        return Response({
+        response_data = {
             'monthly_revenue': monthly_revenue,
+            'monthly_product_stats': monthly_product_stats,
+            'highest_revenue_product_month': highest_revenue_product_month,
+            'lowest_revenue_product_month': lowest_revenue_product_month,
             'quarterly_revenue': quarterly_revenue,
+            'quarterly_product_stats': quarterly_product_stats,
+            'highest_revenue_product_quarter': highest_revenue_product_quarter,
+            'lowest_revenue_product_quarter': lowest_revenue_product_quarter,
             'yearly_revenue': yearly_revenue,
-            'total_revenue': total_revenue,
-            'product_sales': product_sales
-        })
+            'yearly_product_stats': yearly_product_stats,
+            'highest_revenue_product_year': highest_revenue_product_year,
+            'lowest_revenue_product_year': lowest_revenue_product_year,
+        }
+
+        return Response(response_data)
 
     def get_revenue_by_period(self, store, period):
         today = datetime.now()
+        filter_params = {'order__order_status': 'completed'}
         if period == 'month':
-            return OrderDetail.objects.filter(order__store=store, order__order_date__month=today.month,
-                                               order__order_date__year=today.year).aggregate(total=Sum('price'))['total']
+            filter_params['order__order_date__month'] = today.month
+            filter_params['order__order_date__year'] = today.year
         elif period == 'quarter':
             quarter = (today.month - 1) // 3 + 1
-            return OrderDetail.objects.filter(order__store=store, order__order_date__quarter=quarter,
-                                               order__order_date__year=today.year).aggregate(total=Sum('price'))['total']
+            filter_params['order__order_date__quarter'] = quarter
+            filter_params['order__order_date__year'] = today.year
         elif period == 'year':
-            return OrderDetail.objects.filter(order__store=store, order__order_date__year=today.year).aggregate(
-                total=Sum('price'))['total']
+            filter_params['order__order_date__year'] = today.year
 
+        return OrderDetail.objects.filter(store=store, **filter_params).aggregate(total=Sum('price'))['total']
 
-class AdminStatisticsViewSet(viewsets.ViewSet):
-    permission_classes = [permissions.IsAdminUser()]  # Xác thực người dùng là quản trị viên
-
-    def list(self, request):
-        # Thống kê tần suất đơn hàng theo trạng thái
-        order_frequency = Order.objects.values('store__store_name', 'order_status').annotate(
-            total_orders=Count('id'))
-
-        # Tổng doanh thu của từng cửa hàng theo tháng, quý và năm
-        monthly_revenue = self.get_revenue_by_period('month')
-        quarterly_revenue = self.get_revenue_by_period('quarter')
-        yearly_revenue = self.get_revenue_by_period('year')
-
-        return Response({
-            'order_frequency': order_frequency,
-            'monthly_revenue': monthly_revenue,
-            'quarterly_revenue': quarterly_revenue,
-            'yearly_revenue': yearly_revenue
-        })
-
-    def get_revenue_by_period(self, period):
+    def get_product_stats(self, store, period):
         today = datetime.now()
+        filter_params = {'order__order_status': 'completed'}
         if period == 'month':
-            return OrderDetail.objects.filter(order__order_date__month=today.month,
-                                               order__order_date__year=today.year).values(
-                'order__store__store_name').annotate(total=Sum('price'))
+            filter_params['order__order_date__month'] = today.month
+            filter_params['order__order_date__year'] = today.year
         elif period == 'quarter':
             quarter = (today.month - 1) // 3 + 1
-            return OrderDetail.objects.filter(order__order_date__quarter=quarter,
-                                               order__order_date__year=today.year).values(
-                'order__store__store_name').annotate(total=Sum('price'))
+            filter_params['order__order_date__quarter'] = quarter
+            filter_params['order__order_date__year'] = today.year
         elif period == 'year':
-            return OrderDetail.objects.filter(order__order_date__year=today.year).values(
-                'order__store__store_name').annotate(total=Sum('price'))
+            filter_params['order__order_date__year'] = today.year
+
+        return OrderDetail.objects.filter(store=store, **filter_params).values('product__product_name').annotate(
+            total_sales=Sum('quantity'), total_revenue=Sum('price'))
+
+    def get_highest_revenue_product(self, store, period):
+        today = datetime.now()
+        filter_params = {'order__order_status': 'completed'}
+        if period == 'month':
+            filter_params['order__order_date__month'] = today.month
+            filter_params['order__order_date__year'] = today.year
+        elif period == 'quarter':
+            quarter = (today.month - 1) // 3 + 1
+            filter_params['order__order_date__quarter'] = quarter
+            filter_params['order__order_date__year'] = today.year
+        elif period == 'year':
+            filter_params['order__order_date__year'] = today.year
+
+        return OrderDetail.objects.filter(store=store, **filter_params).values('product__product_name').annotate(
+            total_revenue=Sum('price')).order_by('-total_revenue').first()
+
+    def get_lowest_revenue_product(self, store, period):
+        today = datetime.now()
+        filter_params = {'order__order_status': 'completed'}
+        if period == 'month':
+            filter_params['order__order_date__month'] = today.month
+            filter_params['order__order_date__year'] = today.year
+        elif period == 'quarter':
+            quarter = (today.month - 1) // 3 + 1
+            filter_params['order__order_date__quarter'] = quarter
+            filter_params['order__order_date__year'] = today.year
+        elif period == 'year':
+            filter_params['order__order_date__year'] = today.year
+
+        return OrderDetail.objects.filter(store=store, **filter_params).values('product__product_name').annotate(
+            total_revenue=Sum('price')).order_by('total_revenue').first()
 
 
 def index(request):

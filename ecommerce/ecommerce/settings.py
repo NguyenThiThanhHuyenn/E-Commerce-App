@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     'oauth2_provider',
-    'debug_toolbar'
+    'debug_toolbar',
+    'paypal.standard.ipn'
 ]
 
 REST_FRAMEWORK = {'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

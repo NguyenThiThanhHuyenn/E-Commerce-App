@@ -1,0 +1,193 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <h1 class="h3 mb-4 text-gray-800">Commerce Statistics</h1>
+
+    <!-- General Information -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">General Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Information</strong></th>
+                                <th><strong>Value</strong></th>
+                            </tr>
+                            <tr>
+                                <td>Total number of stores:</td>
+                                <td>{{ total_stores }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total number of active stores:</td>
+                                <td>{{ active_stores }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total number of customer accounts:</td>
+                                <td>{{ total_customers }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total number of business accounts:</td>
+                                <td>{{ total_sellers }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total number of unconfirmed business accounts:</td>
+                                <td>{{ unconfirmed_sellers }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Statistics -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Monthly Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Month</strong></th>
+                                <th><strong>Total Sales</strong></th>
+                            </tr>
+                            {% for sale in monthly_total_sales %}
+                            <tr>
+                                <td>{{ sale.month }}</td>
+                                <td>{{ sale.total_sales }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Month - Store Name</strong></th>
+                                <th><strong>Total Sales</strong></th>
+                            </tr>
+                            {% for sale in monthly_store_sales %}
+                            <tr>
+                                <td>{{ sale.month }} - {{ sale.store_name }}</td>
+                                <td>{{ sale.total_sales }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Month - Store Name</strong></th>
+                                <th><strong>Total Paid Orders</strong></th>
+                            </tr>
+                            {% for order in monthly_paid_orders %}
+                            <tr>
+                                <td>{{ order.month }} - {{ order.store_name }}</td>
+                                <td>{{ order.total_paid_orders }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p><strong>Store with the most paid orders:</strong> {{ most_paid_orders_store.store_name }} ({{ most_paid_orders_store.total_paid_orders }} orders)</p>
+                    <p><strong>Store with the lowest sales:</strong> {{ lowest_sales_store.store_name }} ({{ lowest_sales_store.total_sales }} sales)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quarterly Statistics -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Quarterly Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Quarter - Store Name</strong></th>
+                                <th><strong>Total Sales</strong></th>
+                            </tr>
+                            {% for sale in quarterly_store_sales %}
+                            <tr>
+                                <td>{{ sale.quarter }} - {{ sale.store_name }}</td>
+                                <td>{{ sale.total_sales }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Quarter - Store Name</strong></th>
+                                <th><strong>Total Paid Orders</strong></th>
+                            </tr>
+                            {% for order in quarterly_paid_orders %}
+                            <tr>
+                                <td>{{ order.quarter }} - {{ order.store_name }}</td>
+                                <td>{{ order.total_paid_orders }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p><strong>Store with the most paid orders (quarter):</strong> {{ most_paid_orders_store_quarter.store_name }} ({{ most_paid_orders_store_quarter.total_paid_orders }} orders)</p>
+                    <p><strong>Store with the lowest sales (quarter):</strong> {{ lowest_sales_store_quarter.store_name }} ({{ lowest_sales_store_quarter.total_sales }} sales)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yearly Statistics -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Yearly Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Year - Store Name</strong></th>
+                                <th><strong>Total Sales</strong></th>
+                            </tr>
+                            {% for sale in yearly_store_sales %}
+                            <tr>
+                                <td>{{ sale.year }} - {{ sale.store_name }}</td>
+                                <td>{{ sale.total_sales }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong>Year - Store Name</strong></th>
+                                <th><strong>Total Paid Orders</strong></th>
+                            </tr>
+                            {% for order in yearly_paid_orders %}
+                            <tr>
+                                <td>{{ order.year }} - {{ order.store_name }}</td>
+                                <td>{{ order.total_paid_orders }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p><strong>Store with the most paid orders (year):</strong> {{ most_paid_orders_store_year.store_name }} ({{ most_paid_orders_store_year.total_paid_orders }} orders)</p>
+                    <p><strong>Store with the lowest sales (year):</strong> {{ lowest_sales_store_year.store_name }} ({{ lowest_sales_store_year.total_sales }} sales)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

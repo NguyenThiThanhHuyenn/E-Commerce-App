@@ -15,9 +15,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 20,
   },
-  text: {
-    marginBottom: 10,
-  },
   containerView: {
     flex: 1,
     alignItems: "center",
@@ -72,7 +69,7 @@ const styles = StyleSheet.create({
     color: "#e3c888",
     fontSize: 18,
     height: 45,
-    marginTop: 10,
+    marginTop: 27,
     textAlign: "center"
   },
   registerFormContainer: {
@@ -156,7 +153,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   createStoreButton: {
-    flexDirection:'row',
+    flexDirection: 'row',
     backgroundColor: "#f0b11f",
     borderRadius: 10,
     height: 40,
@@ -170,15 +167,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 13,
     fontWeight: "bold",
-    marginLeft:3
+    marginLeft: 3
   },
-  userFullName:{
+  userFullName: {
     color: '#f0b11f',
     fontSize: 25,
     fontWeight: '500',
   },
   storeItem: {
-    flexDirection:'row',
+    flexDirection: 'row',
     marginBottom: 50,
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -199,14 +196,14 @@ const styles = StyleSheet.create({
     color: '#333',
     paddingTop: 15
   },
-  miniStoreImage:{
-    width: 50, 
-    height: 50, 
-    borderRadius: 10, 
+  miniStoreImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
     marginRight: 10,
   },
   completedOrdersContainer: {
-    width:"80%",
+    width: "80%",
     marginTop: 100,
     marginBottom: "100%"
 

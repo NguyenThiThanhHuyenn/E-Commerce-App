@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const HOST = 'http://192.168.1.10:8000';
 
-export const endpoints ={
+export const endpoints = {
     'categories': '/categories/',
     'store': '/store/{store_id}/',
     'create-store': '/store/',
@@ -24,7 +24,7 @@ export const endpoints ={
     'similar-products': '/similar-products/?product_id={product_id}',
     'order-detail': '/order-detail/',
     'remove-order-detail': '/order-detail/{id}/',
-    'update-order-detail':'/order-detail/{id}/',
+    'update-order-detail': '/order-detail/{id}/',
     'create-order': '/order/',
     'create-payment': '/payment/',
     'order-by-user': '/order-by-user/?user_id={user_id}/',
@@ -33,7 +33,7 @@ export const endpoints ={
     'patch-order': '/order/{id}/',
     'pending-order-details': '/pending-order-details/?user_id={user_id}/',
     'seller-statistics': '/seller-statistics/?user_id={user_id}/'
-    
+
 };
 
 //Hàm tiện ích để kiểm tra và cắt bỏ phần "/api" nếu có
@@ -45,11 +45,11 @@ const processUrl = (url) => {
 };
 
 export const authApi = (accessToken) => axios.create({
-        baseURL: HOST,
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
-        }
-    });
+    baseURL: HOST,
+    headers: {
+        "Authorization": `Bearer ${accessToken}`
+    }
+});
 
 // Tạo instance axios mặc định và xử lý các URL trước khi gửi yêu cầu
 const instance = axios.create({

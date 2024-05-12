@@ -9,10 +9,10 @@ export default StyleSheet.create({
   },
   carouselContainer: {
     height: 'auto',
-    width:'100%',
-    alignItems:'center'
+    width: '100%',
+    alignItems: 'center'
 
-    
+
   },
   carousel: {},
   image: {
@@ -23,8 +23,8 @@ export default StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: 450,
-    
-  
+
+
   },
   infoContainer: {
     padding: 20,
@@ -83,14 +83,14 @@ export default StyleSheet.create({
     fontStyle: 'italic',
     color: 'gray',
     marginBottom: 20
-  
+
   },
   inputContainer: {
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
     backgroundColor: 'white'
-    
+
   },
   input: {
     borderWidth: 1,
@@ -114,7 +114,7 @@ export default StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
   },
-  buttonPicker:{
+  buttonPicker: {
     backgroundColor: '#f0b11f',
     padding: 10,
     borderRadius: 5,
@@ -144,38 +144,38 @@ export default StyleSheet.create({
     borderColor: '#ccc',
     textAlign: 'center',
   },
-    similarProductsContainer: {
-      marginTop: 20,
-      paddingHorizontal: 10,
-    },
-    similarProductsTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-    similarProductItem: {
-      marginRight: 10,
-      borderWidth: 1,
-      borderColor: '#ddd',
-      borderRadius: 5,
-      padding: 10,
-      width: 150,
-      backgroundColor: '#fff',
-    },
-    similarProductImage: {
-      width: '100%',
-      height: 100,
-      resizeMode: 'cover',
-      marginBottom: 10,
-    },
-    similarProductTitle: {
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    similarProductPrice: {
-      fontSize: 12,
-      color: 'green',
-    },
+  similarProductsContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  similarProductsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  similarProductItem: {
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 10,
+    width: 150,
+    backgroundColor: '#fff',
+  },
+  similarProductImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+    marginBottom: 10,
+  },
+  similarProductTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  similarProductPrice: {
+    fontSize: 12,
+    color: 'green',
+  },
 });
 
 

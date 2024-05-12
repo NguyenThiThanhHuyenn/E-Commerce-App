@@ -7,7 +7,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white'
-    
+
   },
   input: {
     width: '90%',

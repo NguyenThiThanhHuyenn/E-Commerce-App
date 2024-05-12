@@ -9,27 +9,27 @@ import ImageViewer from './ImageViewer';
 import ProductVariantInput from './ProductVariantInput';
 
 const AddProduct = ({ route }) => {
-    const { storeId } = route.params;
-    const [images, setImages] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [tempImages, setTempImages] = useState([]);
-    const [productVariants, setProductVariants] = useState([]);
-    const [productData, setProductData] = useState({
-        store: null,
-        category: null,
-        product_name: '',
-        price: '',
-        description: '',
-        stock: 0,
-    });
-    const [categories, setCategories] = useState([]);
+  const { storeId } = route.params;
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [tempImages, setTempImages] = useState([]);
+  const [productVariants, setProductVariants] = useState([]);
+  const [productData, setProductData] = useState({
+    store: null,
+    category: null,
+    product_name: '',
+    price: '',
+    description: '',
+    stock: 0,
+  });
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await API.get(endpoints['categories']);
         if (response.status === 200) {
-            setCategories(response.data.results);
+          setCategories(response.data.results);
         } else {
           console.error('Failed to fetch categories:', response.statusText);
         }
@@ -45,35 +45,35 @@ const AddProduct = ({ route }) => {
     const updatedImages = [...images];
     updatedImages.splice(index, 1);
     setImages(updatedImages);
-};
+  };
 
 
-const pickImage = async () => {
-  if (images.length + tempImages.length >= 10) {
+  const pickImage = async () => {
+    if (images.length + tempImages.length >= 10) {
       Alert.alert('Warning', 'You can only upload up to 10 images for each product.');
       return;
-  }
+    }
 
-  let result = await ImagePicker.launchImageLibraryAsync({
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
-  });
+    });
 
-  if (!result.canceled) {
+    if (!result.canceled) {
       setTempImages([...tempImages, result.assets[0].uri]);
-  }
-};
+    }
+  };
 
-const handleSaveImages = () => {
-  setImages([...images, ...tempImages]);
-  setTempImages([]);
-};
-  
+  const handleSaveImages = () => {
+    setImages([...images, ...tempImages]);
+    setTempImages([]);
+  };
 
 
-  
+
+
   const handleInputChange = (key, value) => {
     setProductData({
       ...productData,
@@ -84,9 +84,9 @@ const handleSaveImages = () => {
   const handleAddProduct = async () => {
     try {
       setLoading(true);
-  
+
       const accessToken = await AsyncStorage.getItem('token_access');
-  
+
       const productFormData = new FormData();
       productFormData.append('store', storeId);
       productFormData.append('category', productData.category);
@@ -94,20 +94,20 @@ const handleSaveImages = () => {
       productFormData.append('price', productData.price);
       productFormData.append('description', productData.description);
       productFormData.append('stock', productData.stock);
-  
+
       console.log(productFormData);
-  
+
       const productResponse = await API.post(endpoints.products, productFormData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data'
         },
       });
-  
+
       if (productResponse.status === 201) {
         const productId = productResponse.data.id;
         const productUrl = `${HOST}/products/${productId}/`;
-  
+
         for (const image of images) {
           const imageFormData = new FormData();
           imageFormData.append('product', productUrl);
@@ -116,7 +116,7 @@ const handleSaveImages = () => {
             type: 'image/jpeg',
             name: `image_${Date.now()}.jpg`,
           });
-  
+
           await API.post(endpoints['add-product-images'], imageFormData, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -124,58 +124,58 @@ const handleSaveImages = () => {
             },
           });
         }
-  
+
         // Loop through productVariants to add each variant
         const colorVariants = productVariants.filter(variant => variant.color);
-const sizeVariants = productVariants.filter(variant => variant.size);
+        const sizeVariants = productVariants.filter(variant => variant.size);
 
-// Lưu biến thể color
-for (const colorVariant of colorVariants) {
-  const colorVariantFormData = new FormData();
-  colorVariantFormData.append('product_id', productId);
-  colorVariantFormData.append('color', colorVariant.color);
+        // Lưu biến thể color
+        for (const colorVariant of colorVariants) {
+          const colorVariantFormData = new FormData();
+          colorVariantFormData.append('product_id', productId);
+          colorVariantFormData.append('color', colorVariant.color);
 
-  const colorVariantResponse = await API.post(endpoints['productvariants'], colorVariantFormData, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+          const colorVariantResponse = await API.post(endpoints['productvariants'], colorVariantFormData, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          });
 
-  if (colorVariantResponse.status !== 201) {
-    throw new Error('Failed to add product variant');
-  }
-}
+          if (colorVariantResponse.status !== 201) {
+            throw new Error('Failed to add product variant');
+          }
+        }
 
-// Lưu biến thể size
-for (const sizeVariant of sizeVariants) {
-  const sizeVariantFormData = new FormData();
-  sizeVariantFormData.append('product_id', productId);
-  sizeVariantFormData.append('size', sizeVariant.size);
+        // Lưu biến thể size
+        for (const sizeVariant of sizeVariants) {
+          const sizeVariantFormData = new FormData();
+          sizeVariantFormData.append('product_id', productId);
+          sizeVariantFormData.append('size', sizeVariant.size);
 
-  const sizeVariantResponse = await API.post(endpoints['productvariants'], sizeVariantFormData, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+          const sizeVariantResponse = await API.post(endpoints['productvariants'], sizeVariantFormData, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          });
 
-  if (sizeVariantResponse.status !== 201) {
-    throw new Error('Failed to add product variant');
-  }
-}
+          if (sizeVariantResponse.status !== 201) {
+            throw new Error('Failed to add product variant');
+          }
+        }
 
-Alert.alert('Success', 'Product added successfully');
-setProductData({
-  store: storeId,
-  category: null,
-  product_name: '',
-  price: '',
-  description: '',
-  stock: 0,
-});
-setImages([]);
-setProductVariants([]);
+        Alert.alert('Success', 'Product added successfully');
+        setProductData({
+          store: storeId,
+          category: null,
+          product_name: '',
+          price: '',
+          description: '',
+          stock: 0,
+        });
+        setImages([]);
+        setProductVariants([]);
       }
     } catch (error) {
       console.error('Error adding product:', error);
@@ -190,12 +190,12 @@ setProductVariants([]);
 
   const handleAddVariant = (variant) => {
     setProductVariants([...productVariants, variant]);
-};
+  };
 
-const handleRemoveVariant = (variantToRemove) => {
-  const updatedVariants = productVariants.filter(variant => variant !== variantToRemove);
-  setProductVariants(updatedVariants);
-};
+  const handleRemoveVariant = (variantToRemove) => {
+    const updatedVariants = productVariants.filter(variant => variant !== variantToRemove);
+    setProductVariants(updatedVariants);
+  };
 
 
 
@@ -209,23 +209,24 @@ const handleRemoveVariant = (variantToRemove) => {
           style={styles.input}
         />
         <Picker
-            selectedValue={productData.category}
-            onValueChange={(itemValue, itemIndex) => setProductData(prevData => ({
-                ...prevData,
-                category: itemValue
-            }))}
-            style={styles.input}
-            >
-            <Picker.Item label="Select Category" value={null} />
-                {categories.length > 0 && categories.map((category) => (
+          selectedValue={productData.category}
+          onValueChange={(itemValue, itemIndex) => setProductData(prevData => ({
+            ...prevData,
+            category: itemValue
+          }))}
+          style={styles.input}
+        >
+          <Picker.Item label="Select Category" value={null} />
+          {categories.length > 0 && categories.map((category) => (
             <Picker.Item key={category.id} label={category.name} value={category.id} />
-            ))}
+          ))}
         </Picker>
         <TextInput
           placeholder="Price"
           value={productData.price}
           onChangeText={(text) => handleInputChange('price', text)}
           style={styles.input}
+          keyboardType="numeric"
         />
         <TextInput
           placeholder="Description"
@@ -245,34 +246,34 @@ const handleRemoveVariant = (variantToRemove) => {
         <TouchableOpacity style={styles.buttonPicker} onPress={pickImage}>
           <Text style={styles.pickImageButtonText}>Add Image</Text>
         </TouchableOpacity>
-        
-        <ImageViewer images={images} onDeleteImage={handleDeleteImage}/>
 
-        <TouchableOpacity style={[styles.buttonPicker, { display: tempImages.length === 0 ? 'none' : 'flex' }]}  onPress={handleSaveImages}>
+        <ImageViewer images={images} onDeleteImage={handleDeleteImage} />
+
+        <TouchableOpacity style={[styles.buttonPicker, { display: tempImages.length === 0 ? 'none' : 'flex' }]} onPress={handleSaveImages}>
           <Text style={styles.pickImageButtonText}>Save Images</Text>
         </TouchableOpacity>
 
-          <View>
-            <ProductVariantInput
-              variants={productVariants}
-              onAddVariant={handleAddVariant}
-               
+        <View>
+          <ProductVariantInput
+            variants={productVariants}
+            onAddVariant={handleAddVariant}
+
           />
-          </View>
-          <View>
+        </View>
+        <View>
           {productVariants.map((variant, index) => (
-        <TouchableOpacity
-            key={index}
-            style={styles.variantItem}
-            onLongPress={() => handleRemoveVariant(variant)}>
-            <Text>{variant.size || variant.color}</Text>
-        </TouchableOpacity>
-         ))}
-          </View>
+            <TouchableOpacity
+              key={index}
+              style={styles.variantItem}
+              onLongPress={() => handleRemoveVariant(variant)}>
+              <Text>{variant.size || variant.color}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
 
         <TouchableOpacity onPress={handleAddProduct} style={styles.addButton} disabled={loading}>
-            <Text style={styles.addButtonText}>{loading ? 'Adding...' : 'Add Product'}</Text>
+          <Text style={styles.addButtonText}>{loading ? 'Adding...' : 'Add Product'}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

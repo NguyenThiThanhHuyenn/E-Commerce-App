@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     categoryItem: {
-        flexDirection: 'column', 
+        flexDirection: 'column',
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingVertical: 20,
@@ -10,8 +10,8 @@ export default StyleSheet.create({
         backgroundColor: 'white'
     },
     categoryImage: {
-        width: 80, 
-        height: 80, 
+        width: 80,
+        height: 80,
         borderRadius: 80,
         backgroundColor: 'white'
     },
@@ -32,11 +32,12 @@ export default StyleSheet.create({
         borderRadius: 3,
         height: 30,
         width: 'auto',
-        
+
     },
     paginationText: {
         margin: 5,
-        alignContent: 'center'
+        alignContent: 'center',
+        paddingHorizontal: 5
     }
 
 });

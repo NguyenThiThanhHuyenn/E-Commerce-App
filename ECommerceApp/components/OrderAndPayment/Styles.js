@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
-    color:'gray'
+    color: 'gray'
   },
   placeOrderButton: {
     backgroundColor: '#f0b11f',
@@ -45,58 +45,58 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
-    width:"100%"
-},
-productName: {
+    width: "100%"
+  },
+  productName: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-},
-quantity: {
+  },
+  quantity: {
     fontSize: 14,
     marginBottom: 5,
-},
-price: {
+  },
+  price: {
     fontSize: 14,
     marginBottom: 5,
-},
-note: {
+  },
+  note: {
     fontSize: 14,
-},
-userInfoContainer: {
-  marginBottom: 30,
-  padding: 10,
-  backgroundColor: '#f0f0f0',
-  borderRadius: 8,
-  borderWidth: 1
-},
-userInfoName: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 5,
-},
-userInfo: {
-  fontSize: 16,
-  marginBottom: 3,
-},
-paymentContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginBottom: 10,
-},
-paymentLabel: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  marginRight: 10,
-},
-paymentPicker: {
-  flex: 1,
-  height: 50,
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 8,
-  paddingLeft: 10,
-},
+  },
+  userInfoContainer: {
+    marginBottom: 30,
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    borderWidth: 1
+  },
+  userInfoName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  userInfo: {
+    fontSize: 16,
+    marginBottom: 3,
+  },
+  paymentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  paymentLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  paymentPicker: {
+    flex: 1,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingLeft: 10,
+  },
 });
 
 export default styles;

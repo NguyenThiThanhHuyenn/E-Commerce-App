@@ -23,18 +23,18 @@ const HomeScreen = () => {
             try {
                 const categoriesResponse = await API.get(endpoints['categories']);
                 setCategories(categoriesResponse.data.results);
-                
 
-                const productsResponse = await API.get(endpoints['products'], { 
-                    params: { 
-                        limit: productsPerPage, 
-                        offset: (currentPage - 1) * productsPerPage 
+
+                const productsResponse = await API.get(endpoints['products'], {
+                    params: {
+                        limit: productsPerPage,
+                        offset: (currentPage - 1) * productsPerPage
                     }
                 });
                 setProducts(productsResponse.data.results);
                 setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
                 setNextPageUrl(productsResponse.data.next);
-    
+
                 const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
                 const images = await Promise.all(imagesPromises);
                 const imagesMap = images.reduce((acc, curr, index) => {
@@ -49,7 +49,7 @@ const HomeScreen = () => {
                 console.error(ex);
             }
         };
-    
+
         fetchData();
     }, [initialLoad]);
 
@@ -59,13 +59,13 @@ const HomeScreen = () => {
             const apiUrl = endpoints['products-by-category'].replace('{category_id}', categories.id);
             const productsResponse = await API.get(apiUrl);
             console.log('API URL:', apiUrl);
-            navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results});
-            
+            navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results });
+
         } catch (ex) {
             console.error(ex);
         }
     };
-    
+
 
     const handleNextPage = async () => {
         if (nextPageUrl) {
@@ -74,87 +74,30 @@ const HomeScreen = () => {
                 setProducts(productsResponse.data.results);
                 setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
                 setNextPageUrl(productsResponse.data.next);
-    
+
                 const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
                 const images = await Promise.all(imagesPromises);
                 const imagesMap = images.reduce((acc, curr, index) => {
                     acc[productsResponse.data.results[index].id] = curr.length > 0 ? curr[0] : null;
                     return acc;
                 }, {});
-                setProductImages(prevImages => ({ ...prevImages, ...imagesMap })); 
-                setCurrentPage(prevPage => prevPage + 1); 
+                setProductImages(prevImages => ({ ...prevImages, ...imagesMap }));
+                setCurrentPage(prevPage => prevPage + 1);
             } catch (ex) {
                 console.error(ex);
             }
         }
     };
-    
-    const handlePreviousPage = async () => {
-        if (currentPage > 1) {
-            const previousPage = currentPage - 1;
-            console.log('Previous Page:', previousPage);
-            try {
-                const productsResponse = await API.get(endpoints['products'], { 
-                    params: { 
-                        limit: productsPerPage, 
-                        offset: (previousPage - 1) * productsPerPage 
-                    }
-                });
-                setProducts(productsResponse.data.results);
-                setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
-                setNextPageUrl(productsResponse.data.next);
-    
-                const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
-                const images = await Promise.all(imagesPromises);
-                const imagesMap = images.reduce((acc, curr, index) => {
-                    acc[productsResponse.data.results[index].id] = curr.length > 0 ? curr[0] : null;
-                    return acc;
-                }, {});
-                setProductImages(prevImages => ({ ...prevImages, ...imagesMap })); 
-                setCurrentPage(previousPage); 
-            } catch (ex) {
-                console.error(ex);
-            }
-        }
-    };
-    
-    
-    
-    const handleGoToPage = async (pageNumber) => {
-        if (pageNumber >= 1 && pageNumber <= totalPages) {
-            console.log('Go to Page:', pageNumber);
-            try {
-                const productsResponse = await API.get(endpoints['products'], { 
-                    params: { 
-                        limit: productsPerPage, 
-                        offset: (pageNumber - 1) * productsPerPage 
-                    }
-                });
-                setProducts(productsResponse.data.results);
-                setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
-                setNextPageUrl(productsResponse.data.next);
-    
-                const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
-                const images = await Promise.all(imagesPromises);
-                const imagesMap = images.reduce((acc, curr, index) => {
-                    acc[productsResponse.data.results[index].id] = curr.length > 0 ? curr[0] : null;
-                    return acc;
-                }, {});
-                setProductImages(imagesMap); 
-                setCurrentPage(pageNumber); 
-            } catch (ex) {
-                console.error(ex);
-            }
-        }
-    };
-    
-    
+
+
+
+
 
     const fetchProductImages = async (productId) => {
         try {
             const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', productId));
             return productImageResponse.data.results;
-            
+
         } catch (ex) {
             console.error(ex);
             return [];
@@ -173,44 +116,104 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const renderProductItem = ({ item }) => {
         const productImage = productImages[item.id];
-        
+
         if (!productImage) {
-            return null; 
+            return null;
         }
-    
+
         const imageUrl = productImage.image_url;
-    
+
         const handleProductPress = () => {
             navigation.navigate('ProductDetail', { product: item });
         };
-    
+
         return (
             <TouchableOpacity key={item.id} style={AppStyles.container} onPress={handleProductPress}>
                 <Image source={{ uri: imageUrl }} style={AppStyles.images} />
                 <Text style={AppStyles.productName}>{item.product_name}</Text>
-                <Text style={AppStyles.price}>{item.price}</Text>
+                <Text style={AppStyles.price}>{item.price} VND</Text>
             </TouchableOpacity>
         );
     };
-    const MAX_BUTTONS = 5; 
+    const MAX_BUTTONS = 5;
 
     const calculatePaginationRange = () => {
         let start = Math.max(1, currentPage - Math.floor(MAX_BUTTONS / 2));
         let end = Math.min(totalPages, start + MAX_BUTTONS - 1);
-        
+
         if (end - start + 1 < MAX_BUTTONS) {
-            end = Math.min(totalPages, start + MAX_BUTTONS - 1); 
-            start = Math.max(1, end - MAX_BUTTONS + 1); 
+            end = Math.min(totalPages, start + MAX_BUTTONS - 1);
+            start = Math.max(1, end - MAX_BUTTONS + 1);
         }
-    
+
         return { start, end };
     };
-    
+
+    const handlePreviousPage = async () => {
+        if (currentPage > 1) {
+            const previousPage = currentPage - 1;
+            console.log('Previous Page:', previousPage);
+            try {
+                const productsResponse = await API.get(endpoints['products'], {
+                    params: {
+                        limit: productsPerPage,
+                        offset: (previousPage - 1) * productsPerPage
+                    }
+                });
+                setProducts(productsResponse.data.results);
+                setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
+                setNextPageUrl(productsResponse.data.next);
+
+                const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
+                const images = await Promise.all(imagesPromises);
+                const imagesMap = images.reduce((acc, curr, index) => {
+                    acc[productsResponse.data.results[index].id] = curr.length > 0 ? curr[0] : null;
+                    return acc;
+                }, {});
+                setProductImages(prevImages => ({ ...prevImages, ...imagesMap }));
+                setCurrentPage(previousPage);
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
+    };
+
+
+
+    const handleGoToPage = async (pageNumber) => {
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            console.log('Go to Page:', pageNumber);
+            try {
+                const productsResponse = await API.get(endpoints['products'], {
+                    params: {
+                        limit: productsPerPage,
+                        offset: (pageNumber - 1) * productsPerPage
+                    }
+                });
+                setProducts(productsResponse.data.results);
+                console.log('Products Response:', productsResponse.data.results);
+                setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
+                setNextPageUrl(productsResponse.data.next);
+
+                const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
+                const images = await Promise.all(imagesPromises);
+                const imagesMap = images.reduce((acc, curr, index) => {
+                    acc[productsResponse.data.results[index].id] = curr.length > 0 ? curr[0] : null;
+                    return acc;
+                }, {});
+                setProductImages(imagesMap);
+                setCurrentPage(pageNumber);
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
+    };
+
     const renderPaginationButtons = () => {
         const { start, end } = calculatePaginationRange();
-    
+
         const buttons = [];
-    
+
         // Nút Previous
         if (currentPage > 1) {
             buttons.push(
@@ -223,35 +226,8 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             );
         }
-        
-        if (start > 1) {
-            buttons.push(
-                <TouchableOpacity key="startDots" style={Styles.paginationButtons}>
-                    <Text style={Styles.paginationText}>...</Text>
-                </TouchableOpacity>
-            );
-        }
 
-        for (let i = start; i <= end; i++) {
-            buttons.push(
-                <TouchableOpacity
-                    key={i}
-                    style={[Styles.paginationButtons, i === currentPage ? Styles.activeButton : null]}
-                    onPress={() => handleGoToPage(i)}
-                >
-                    <Text style={Styles.paginationText}>{i.toString()}</Text>
-                </TouchableOpacity>
-            );
-        }
-    
-        if (end < totalPages) {
-            buttons.push(
-                <TouchableOpacity key="endDots" style={Styles.paginationButtons}>
-                    <Text style={Styles.paginationText}>...</Text>
-                </TouchableOpacity>
-            );
-        }
-    
+        // Nút Next
         if (currentPage < totalPages) {
             buttons.push(
                 <TouchableOpacity
@@ -263,10 +239,9 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             );
         }
-    
+
         return buttons;
     };
-    
 
 
     return (
@@ -277,7 +252,7 @@ const HomeScreen = () => {
                 data={categories}
                 renderItem={({ item }) => renderCategoryItem(item)}
                 keyExtractor={(item) => item.id.toString()}
-                style={{backgroundColor: 'white'}}
+                style={{ backgroundColor: 'white' }}
             />
 
             {AppStyles != undefined && <FlatList
@@ -287,7 +262,7 @@ const HomeScreen = () => {
                 renderItem={renderProductItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
-                style={{backgroundColor: 'white'}}
+                style={{ backgroundColor: 'white' }}
             />}
 
             <View style={{ flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white' }}>

@@ -9,7 +9,7 @@ export default StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    
+
   },
   storeWallpaper: {
     width: '100%',
@@ -23,7 +23,7 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   storeDescription: {
-    marginTop:20,
+    marginTop: 20,
     fontSize: 16,
     color: '#666',
   },
@@ -36,7 +36,7 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   productItem: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
     borderWidth: 2,
@@ -107,29 +107,29 @@ export default StyleSheet.create({
     color: 'white',
     fontWeight: 'bold'
   },
-  headerProductList:{
-    flexDirection:'row'
+  headerProductList: {
+    flexDirection: 'row'
   },
-  buttonAddProduct:{
+  buttonAddProduct: {
     marginLeft: 20
   },
-  storeInfo:{
+  storeInfo: {
     flexDirection: 'row'
   },
-  buttonForSeller:{
+  buttonForSeller: {
     flexDirection: 'row'
   },
-  buttonUpdate:{
+  buttonUpdate: {
     marginBottom: 20,
     marginRight: 20
   },
-  containerUpdateStore:{
+  containerUpdateStore: {
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
     backgroundColor: 'white'
   },
-  buttonSubmitUpdate:{
+  buttonSubmitUpdate: {
     backgroundColor: '#f0b11f',
     padding: 10,
     borderRadius: 5,

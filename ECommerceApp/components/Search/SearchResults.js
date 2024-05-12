@@ -12,11 +12,11 @@ const SearchResultScreen = ({ route }) => {
     const productImage = productImages[item.id];
 
     if (!productImage) {
-      return null; 
+      return null;
     }
 
     const imageUrl = productImage.image_url;
-    
+
     return (
       <TouchableOpacity
         style={AppStyles.container}

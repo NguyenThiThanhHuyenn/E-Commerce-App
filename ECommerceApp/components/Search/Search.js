@@ -10,11 +10,11 @@ export default SearchScreen = () => {
     const [keyword, setKeyword] = useState('');
     const navigation = useNavigation();
     const [products, setProducts] = useState([]);
-    const [sortBy, setSortBy] = useState('product_name'); 
-    const [sortOrder, setSortOrder] = useState('asc'); 
+    const [sortBy, setSortBy] = useState('product_name');
+    const [sortOrder, setSortOrder] = useState('asc');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState([]); 
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
     const [productImages, setProductImages] = useState({});
 
@@ -22,7 +22,7 @@ export default SearchScreen = () => {
         try {
             const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', productId));
             return productImageResponse.data.results;
-            
+
         } catch (ex) {
             console.error(ex);
             return [];
@@ -32,16 +32,16 @@ export default SearchScreen = () => {
     const handleSearch = async () => {
         try {
             const response = await API.get(endpoints.products, {
-              params: { search: keyword, ordering: `${sortOrder === 'asc' ? '' : '-'}${sortBy}` },
+                params: { search: keyword, ordering: `${sortOrder === 'asc' ? '' : '-'}${sortBy}` },
             });
-            
+
             setProducts(response.data.results);
 
             const imagesPromises = response.data.results.map(product => fetchProductImages(product.id));
             const images = await Promise.all(imagesPromises);
             const imagesMap = images.reduce((acc, curr, index) => {
-              acc[response.data.results[index].id] = curr.length > 0 ? curr[0] : null;
-              return acc;
+                acc[response.data.results[index].id] = curr.length > 0 ? curr[0] : null;
+                return acc;
             }, {});
 
             setProductImages(imagesMap);
@@ -49,11 +49,11 @@ export default SearchScreen = () => {
             // Lọc sản phẩm dựa trên khoảng giá
             const filteredProducts = response.data.results.filter(product => {
                 if (minPrice && maxPrice) {
-                  return product.price >= minPrice && product.price <= maxPrice;
+                    return product.price >= minPrice && product.price <= maxPrice;
                 } else if (minPrice) {
-                  return product.price >= minPrice;
+                    return product.price >= minPrice;
                 } else if (maxPrice) {
-                  return product.price <= maxPrice;
+                    return product.price <= maxPrice;
                 }
                 return true; // Trả về tất cả sản phẩm nếu không có khoảng giá nào được nhập
             });
@@ -61,10 +61,10 @@ export default SearchScreen = () => {
             setFilteredProducts(filteredProducts); // Cập nhật danh sách sản phẩm đã lọc
 
             // Chuyển hướng đến màn hình kết quả tìm kiếm
-            navigation.navigate('SearchResults', { 
-                searchQuery: keyword, 
+            navigation.navigate('SearchResults', {
+                searchQuery: keyword,
                 products: filteredProducts, // Chuyển danh sách sản phẩm đã lọc
-                productImages: imagesMap 
+                productImages: imagesMap
             });
 
         } catch (error) {

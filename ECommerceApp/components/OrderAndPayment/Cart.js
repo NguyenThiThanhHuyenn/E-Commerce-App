@@ -42,7 +42,7 @@ export default CartScreen = ({ navigation, route }) => {
                 const deletedOrderDetail = orderDetails.find(item => item.id === id);
                 const updatedOrderDetails = orderDetails.filter(item => item.id !== id);
                 setOrderDetails(updatedOrderDetails);
-    
+
                 Alert.alert('Success', 'Item removed from cart successfully.');
             }
         } catch (error) {
@@ -50,7 +50,7 @@ export default CartScreen = ({ navigation, route }) => {
             Alert.alert('Error', 'Failed to remove item from cart. Please try again later.');
         }
     };
-    
+
     const calculateTotal = useMemo(() => {
         let total = 0;
         if (Array.isArray(orderDetails)) {
@@ -65,7 +65,7 @@ export default CartScreen = ({ navigation, route }) => {
     const placeOrder = async () => {
         try {
             const accessToken = await AsyncStorage.getItem('token_access');
-               
+
             // Duyệt qua từng order detail và gửi yêu cầu thanh toán cho từng order
             for (const orderDetail of orderDetails) {
                 const formData = new FormData();
@@ -75,7 +75,7 @@ export default CartScreen = ({ navigation, route }) => {
                 formData.append('transaction_id', '000000');
 
                 console.log(formData)
-    
+
                 // Gửi yêu cầu API thanh toán
                 const response = await API.post(endpoints['create-payment'], formData, {
                     headers: {
@@ -83,7 +83,7 @@ export default CartScreen = ({ navigation, route }) => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-    
+
                 if (response.status === 201) {
                     console.log('Payment successful:', response.data);
                     // Hiển thị thông báo
@@ -101,34 +101,34 @@ export default CartScreen = ({ navigation, route }) => {
         } catch (error) {
             Alert.alert('Error', 'Failed to place orders. Please try again later.');
         }
-          };
+    };
 
 
-          const updateOrderStatus = async (orderId) => {
-            try {
-                const accessToken = await AsyncStorage.getItem('token_access');
-        
-                const formData = new FormData();
-                formData.append('order_status', 'completed');
-        
-                const response = await API.patch(endpoints['patch-order'].replace('{id}',orderId), formData, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-        
-                if (response.status === 200) {
-                    console.log('Order status updated successfully:', response.data);
-                } else {
-                    throw new Error('Failed to update order status');
+    const updateOrderStatus = async (orderId) => {
+        try {
+            const accessToken = await AsyncStorage.getItem('token_access');
+
+            const formData = new FormData();
+            formData.append('order_status', 'completed');
+
+            const response = await API.patch(endpoints['patch-order'].replace('{id}', orderId), formData, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'multipart/form-data'
                 }
-            } catch (error) {
-                console.error('Error updating order status:', error);
+            });
+
+            if (response.status === 200) {
+                console.log('Order status updated successfully:', response.data);
+            } else {
+                throw new Error('Failed to update order status');
             }
-        };
-        
-            
+        } catch (error) {
+            console.error('Error updating order status:', error);
+        }
+    };
+
+
 
     const renderOrderItem = ({ item }) => (
         <TouchableOpacity
@@ -183,7 +183,7 @@ export default CartScreen = ({ navigation, route }) => {
             <Text style={styles.totalText}>Total: {calculateTotal} VND</Text>
             <TouchableOpacity
                 style={styles.placeOrderButton}
-                onPress={placeOrder} 
+                onPress={placeOrder}
             >
                 <Text style={styles.placeOrderButtonText}>Place Order</Text>
             </TouchableOpacity>

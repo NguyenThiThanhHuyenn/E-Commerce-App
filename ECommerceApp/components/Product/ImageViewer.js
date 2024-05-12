@@ -25,13 +25,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center', 
+    justifyContent: 'center',
   },
   image: {
     width: 100,
     height: 100,
     margin: 5,
-    alignItems:'center'
+    alignItems: 'center'
   },
 });
 

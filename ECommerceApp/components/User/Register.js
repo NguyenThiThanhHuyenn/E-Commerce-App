@@ -17,8 +17,8 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     address: '',
-    phone_number: '', 
-    role: 'customer', 
+    phone_number: '',
+    role: 'customer',
     avatar: null
   });
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,7 @@ const Register = () => {
     } catch (error) {
       console.error(error);
       Alert.alert("Registration Failed", error.message);
-      console.error("Error details:", error.response?.status, error.response?.data); 
+      console.error("Error details:", error.response?.status, error.response?.data);
     } finally {
       setLoading(false);
     }
@@ -91,8 +91,8 @@ const Register = () => {
   };
 
   function ImageViewer({ selectedImage }) {
-    const imageSource = selectedImage  ? { uri: selectedImage } : require('../../assets/default.png');
-  
+    const imageSource = selectedImage ? { uri: selectedImage } : require('../../assets/default.png');
+
     return <Image source={imageSource} style={styles.avatar} />;
   }
 

@@ -16,7 +16,6 @@ const ProductByCategory = ({ route }) => {
                 try {
                     const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', product.id));
                     const productImages = productImageResponse.data.results;
-                    // Lấy ảnh đầu tiên từ danh sách ảnh và gán vào product
                     if (productImages.length > 0) {
                         return { productId: product.id, image: productImages[0].image_url };
                     } else {
@@ -29,7 +28,7 @@ const ProductByCategory = ({ route }) => {
             });
             const images = await Promise.all(imagesPromises);
             const imagesMap = images.reduce((acc, curr) => {
-                acc[curr.productId] = curr.image_url;
+                acc[curr.productId] = curr.image;
                 return acc;
             }, {});
             setProductImages(imagesMap);
@@ -41,7 +40,7 @@ const ProductByCategory = ({ route }) => {
     const renderProductItem = ({ item }) => {
         const imageUrl = productImages[item.id];
 
-        
+
 
         return (
             <TouchableOpacity style={AppStyles.container} onPress={() => navigation.navigate('ProductDetail', { product: item })}>
@@ -54,7 +53,7 @@ const ProductByCategory = ({ route }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <Image source={{ uri: category.image_url }} style={ProductStyles.categoryBanner}/>
+            <Image source={{ uri: category.image_url }} style={ProductStyles.categoryBanner} />
             <FlatList
                 key="productsFlatList"
                 showsVerticalScrollIndicator={false}

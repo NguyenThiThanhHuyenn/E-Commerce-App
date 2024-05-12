@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import styles from "./UserStyles"; 
+import styles from "./UserStyles";
 import MyContext from '../../configs/MyContext';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 
 export default UserPage = () => {
   const [currentUser] = useContext(MyContext);
-  const [store, setStore] = useState(null); 
+  const [store, setStore] = useState(null);
   const [completedOrders, setCompletedOrders] = useState([]);
   const navigation = useNavigation();
 
@@ -73,7 +73,7 @@ export default UserPage = () => {
 
         {store && (
           <TouchableOpacity style={styles.storeItem} onPress={handleNavigateToStore}>
-            <Image source={{uri: store.wallpaper_url}} style={styles.miniStoreImage}/>
+            <Image source={{ uri: store.wallpaper_url }} style={styles.miniStoreImage} />
             <Text style={styles.storeName}>{store.store_name}</Text>
           </TouchableOpacity>
         )}
@@ -86,7 +86,7 @@ export default UserPage = () => {
           </View>
         )}
 
-        
+
       </View>
     </ScrollView>
   );

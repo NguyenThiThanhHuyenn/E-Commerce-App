@@ -57,6 +57,7 @@ const HomeScreen = () => {
     const handleCategoryPress = async (categories) => {
         try {
             const apiUrl = endpoints['products-by-category'].replace('{category_id}', categories.id);
+            console.log(apiUrl)
             const productsResponse = await API.get(apiUrl);
             navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results });
 
@@ -95,7 +96,7 @@ const HomeScreen = () => {
     const fetchProductImages = async (productId) => {
         try {
             const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', productId));
-            console.log(endpoints['product-images'].replace('{product_id}', productId))
+            // console.log(endpoints['product-images'].replace('{product_id}', productId))
             return productImageResponse.data.results;
 
         } catch (ex) {

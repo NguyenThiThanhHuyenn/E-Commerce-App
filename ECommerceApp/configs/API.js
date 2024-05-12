@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const HOST = 'http://192.168.1.10:8000';
+export const HOST = 'https://thanhhy.pythonanywhere.com';
 
 export const endpoints = {
     'categories': '/categories/',

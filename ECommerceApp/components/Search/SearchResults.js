@@ -24,7 +24,7 @@ const SearchResultScreen = ({ route }) => {
       >
         <Image source={{ uri: imageUrl }} style={AppStyles.images} />
         <Text style={AppStyles.productName}>{item.product_name}</Text>
-        <Text style={AppStyles.price}>{item.price}</Text>
+        <Text style={AppStyles.price}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
       </TouchableOpacity>
     );
   };

@@ -134,7 +134,7 @@ const HomeScreen = () => {
             <TouchableOpacity key={item.id} style={AppStyles.container} onPress={handleProductPress}>
                 <Image source={{ uri: imageUrl }} style={AppStyles.images} />
                 <Text style={AppStyles.productName}>{item.product_name}</Text>
-                <Text style={AppStyles.price}>{item.price} VND</Text>
+                <Text style={AppStyles.price}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
             </TouchableOpacity>
         );
     };
@@ -183,34 +183,7 @@ const HomeScreen = () => {
 
 
 
-    const handleGoToPage = async (pageNumber) => {
-        if (pageNumber >= 1 && pageNumber <= totalPages) {
-            console.log('Go to Page:', pageNumber);
-            try {
-                const productsResponse = await API.get(endpoints['products'], {
-                    params: {
-                        limit: productsPerPage,
-                        offset: (pageNumber - 1) * productsPerPage
-                    }
-                });
-                setProducts(productsResponse.data.results);
-                console.log('Products Response:', productsResponse.data.results);
-                setTotalPages(Math.ceil(productsResponse.data.count / productsPerPage));
-                setNextPageUrl(productsResponse.data.next);
-
-                const imagesPromises = productsResponse.data.results.map(product => fetchProductImages(product.id));
-                const images = await Promise.all(imagesPromises);
-                const imagesMap = images.reduce((acc, curr, index) => {
-                    acc[productsResponse.data.results[index].id] = curr.length > 0 ? curr[0] : null;
-                    return acc;
-                }, {});
-                setProductImages(imagesMap);
-                setCurrentPage(pageNumber);
-            } catch (ex) {
-                console.error(ex);
-            }
-        }
-    };
+    
 
     const renderPaginationButtons = () => {
         const { start, end } = calculatePaginationRange();

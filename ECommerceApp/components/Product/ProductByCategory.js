@@ -46,7 +46,7 @@ const ProductByCategory = ({ route }) => {
             <TouchableOpacity style={AppStyles.container} onPress={() => navigation.navigate('ProductDetail', { product: item })}>
                 <Image style={AppStyles.images} source={{ uri: imageUrl }} />
                 <Text style={AppStyles.productName}>{item.product_name}</Text>
-                <Text style={AppStyles.price}>{item.price}</Text>
+                <Text style={AppStyles.price}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
             </TouchableOpacity>
         );
     };

@@ -140,7 +140,7 @@ export default CartScreen = ({ navigation, route }) => {
                     <Text style={styles.productName}>Product: {item.product_name.product_name}</Text>
                 )}
                 <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
-                <Text style={styles.price}>Price: {item.price} VND</Text>
+                <Text style={styles.price}>Price: {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
                 <Text style={styles.note}>Note: {item.note}</Text>
             </View>
         </TouchableOpacity>
@@ -180,7 +180,7 @@ export default CartScreen = ({ navigation, route }) => {
                     <Picker.Item label="MoMo" value="momo" />
                 </Picker>
             </View>
-            <Text style={styles.totalText}>Total: {calculateTotal} VND</Text>
+            <Text style={styles.totalText}>Total: {calculateTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
             <TouchableOpacity
                 style={styles.placeOrderButton}
                 onPress={placeOrder}

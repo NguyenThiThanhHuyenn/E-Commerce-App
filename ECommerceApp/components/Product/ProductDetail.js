@@ -366,7 +366,8 @@ const ProductDetail = ({ route }) => {
             </View>
           </ScrollView>
           <View style={styles.priceContainer}>
-            <Text style={styles.priceText}>{product.price} VND</Text>
+          <Text style={styles.priceText}>{product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+
           </View>
           <View>
             {productVariants && productVariants.length > 0 && (

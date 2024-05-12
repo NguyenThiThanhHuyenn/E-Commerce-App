@@ -59,7 +59,7 @@ export default UserPage = () => {
       <TouchableOpacity key={order.id} style={styles.completedOrderItem}>
         {/* Hiển thị thông tin đơn hàng */}
         <Text style={styles.orderTitle}>Order: {format(new Date(order.order_date), 'dd/MM/yyyy HH:mm')}</Text>
-        <Text style={styles.orderInfo}>Total Amount: {order.total_amount} VND</Text>
+        <Text style={styles.orderInfo}>Total Amount: {order.total_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
         {/* Thêm các thông tin khác của đơn hàng nếu cần */}
       </TouchableOpacity>
     ));

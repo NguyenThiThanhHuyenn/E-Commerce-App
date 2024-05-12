@@ -205,7 +205,7 @@ const Store = ({ route }) => {
                 <Image source={{ uri: product.image_url }} style={styles.productImage} />
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{product.product_name}</Text>
-                  <Text style={styles.productPrice}>{product.price} VND</Text>
+                  <Text style={styles.productPrice}>{product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
                   <Text style={styles.productAverageRating}>
                     {product.averageRating.toFixed(1)}/5.0<Icon name='star' size={20} type='ionicon' color={'#b89d3b'} />
                   </Text>

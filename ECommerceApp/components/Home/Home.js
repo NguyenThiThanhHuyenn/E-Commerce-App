@@ -46,7 +46,7 @@ const HomeScreen = () => {
                 // Đã tải dữ liệu lần đầu, đặt biến đánh dấu là false
                 setInitialLoad(false);
             } catch (ex) {
-                console.error(ex);
+                console.error("Loi so 1: "+ex);
             }
         };
 
@@ -58,7 +58,6 @@ const HomeScreen = () => {
         try {
             const apiUrl = endpoints['products-by-category'].replace('{category_id}', categories.id);
             const productsResponse = await API.get(apiUrl);
-            console.log('API URL:', apiUrl);
             navigation.navigate('ProductByCategory', { category: categories, products: productsResponse.data.results });
 
         } catch (ex) {
@@ -84,7 +83,7 @@ const HomeScreen = () => {
                 setProductImages(prevImages => ({ ...prevImages, ...imagesMap }));
                 setCurrentPage(prevPage => prevPage + 1);
             } catch (ex) {
-                console.error(ex);
+                console.error("Loi 2" + ex);
             }
         }
     };
@@ -96,10 +95,13 @@ const HomeScreen = () => {
     const fetchProductImages = async (productId) => {
         try {
             const productImageResponse = await API.get(endpoints['product-images'].replace('{product_id}', productId));
+            console.log(endpoints['product-images'].replace('{product_id}', productId))
             return productImageResponse.data.results;
 
         } catch (ex) {
-            console.error(ex);
+            console.error("Loi 3: "+ ex);
+            console.error('Error response 3:', ex.response);
+            console.error('Error details 3:', ex.response?.status, ex.response?.data);
             return [];
         }
     };

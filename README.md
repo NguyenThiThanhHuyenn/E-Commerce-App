@@ -3,23 +3,54 @@
 ## Backend
 
 ### Bước 1: Clone repository
-#### git clone https://github.com/NguyenThiThanhHuyenn/E-Commerce-App.git
-### Bước 2: Kích hoạt môi trường ảo: env\Scripts\activate
-#### Nếu chưa có môi trường, cài đặt: python3 -m venv env
+
+```commandline
+git clone https://github.com/NguyenThiThanhHuyenn/E-Commerce-App.git
+```
+
+### Bước 2: Kích hoạt môi trường ảo: 
+
+```commandline
+env\Scripts\activate
+```
+
+#### Nếu chưa có môi trường, cài đặt:
+```commandline
+python3 -m venv env
+```
+
 ### Bước 3: Cài đặt các gói phụ thuộc
-#### pip install -r requirements.txt
+
+```commandline
+pip install -r requirements.txt
+```
+
 ### Bước 4: Chạy migration và server
-#### python manage.py migrate
-#### python manage.py runserver
+
+```commandline
+python manage.py migrate
+python manage.py runserver
+```
+
 
 ## Frontend
 
 ### Yêu cầu
 #### _Node.js,npm và Expo CLI_
 
-### Cài đặt dependencies : npm install
+### Cài đặt dependencies :
 
-### Chạy ứng dụng: expo start
+```commandline
+npm install
+```
+
+
+### Chạy ứng dụng: 
+
+```commandline
+expo start
+```
+
 
 
 ## Các tài khoản:
@@ -27,7 +58,7 @@
 | Loại tài khoản | username | password  |
 |----------------|----------|-----------|
 | Admin (super)  | hyadmin  | 123abc!!! |
-| Staff          | staff1   | 123456    |
+| Staff          | staff1   | abcdef    |
 | Seller         | yejunn   | 123456    |
 | Customer       | eunhodo  | 123456    |
 

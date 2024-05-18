@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-l*44q_93937zi04ck6=w(0s^y3#qvu%ukfcy3o))b+f^z*ic!6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.117']
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -90,6 +90,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Database

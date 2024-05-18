@@ -11,6 +11,8 @@ export default CartScreen = ({ navigation, route }) => {
     const [orderDetails, setOrderDetails] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState('cash_on_delivery');
 
+
+
     const fetchCart = async () => {
         try {
             const accessToken = await AsyncStorage.getItem('token_access');
@@ -29,6 +31,9 @@ export default CartScreen = ({ navigation, route }) => {
     useEffect(() => {
         fetchCart();
     }, []);
+
+
+
 
     const removeItem = async (id) => {
         try {
@@ -149,12 +154,14 @@ export default CartScreen = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Cart</Text>
-            <View style={styles.userInfoContainer}>
-                <Text style={styles.userInfoName}>{currentUser.first_name} {currentUser.last_name}</Text>
-                <Text style={styles.userInfo}>{currentUser.email}</Text>
-                <Text style={styles.userInfo}>{currentUser.phone_number}</Text>
-                <Text style={styles.userInfo}>{currentUser.address}</Text>
-            </View>
+            {currentUser ? (
+                <View style={styles.userInfoContainer}>
+                    <Text style={styles.userInfoName}>{currentUser.first_name} {currentUser.last_name}</Text>
+                    <Text style={styles.userInfo}>{currentUser.email}</Text>
+                    <Text style={styles.userInfo}>{currentUser.phone_number}</Text>
+                    <Text style={styles.userInfo}>{currentUser.address}</Text>
+                </View>
+            ) : null}
             {orderDetails.length > 0 ? (
                 <FlatList
                     showsVerticalScrollIndicator={false}

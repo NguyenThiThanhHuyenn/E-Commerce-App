@@ -12,6 +12,7 @@ export default UserPage = () => {
   const [currentUser] = useContext(MyContext);
   const [store, setStore] = useState(null);
   const [completedOrders, setCompletedOrders] = useState([]);
+  
   const navigation = useNavigation();
 
 
@@ -50,6 +51,11 @@ export default UserPage = () => {
     return null;
   }
 
+  const handleCreateStore = () => {
+    // Chuyển hướng tới màn hình tạo cửa hàng
+    navigation.navigate('CreateStore');
+  };
+
   const handleNavigateToStore = () => {
     navigation.navigate('Store', { storeId: store.id });
   };
@@ -70,6 +76,11 @@ export default UserPage = () => {
       <View style={styles.containerUserPage}>
         <Image source={{ uri: currentUser.avatar_url }} style={styles.avatar} />
         <Text style={styles.userFullName}>{currentUser.first_name} {currentUser.last_name}</Text>
+
+        {/* Nút Create Store */}
+        <TouchableOpacity style={styles.createStoreButton} onPress={handleCreateStore}>
+          <Text style={styles.createStoreButtonText}>Create Store</Text>
+        </TouchableOpacity>
 
         {store && (
           <TouchableOpacity style={styles.storeItem} onPress={handleNavigateToStore}>

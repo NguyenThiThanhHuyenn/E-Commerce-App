@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const HOST = 'https://993a-113-161-56-156.ngrok-free.app';
+export const HOST = 'https://2e09-14-241-246-38.ngrok-free.app';
 
 export const endpoints = {
     'categories': '/categories/',

@@ -49,7 +49,7 @@ const StatsScreen = ({ userToken }) => {
   if (!statistics) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>Error fetching statistics</Text>
+        <Text style={styles.errorText}>No statistics available</Text>
       </View>
     );
   }
@@ -57,66 +57,65 @@ const StatsScreen = ({ userToken }) => {
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        <Text style={styles.heading}>Monthly Revenue: {statistics.monthly_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+        <Text style={styles.heading}>Monthly Revenue: {statistics && statistics.monthly_revenue ? statistics.monthly_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         <View style={styles.statsContainer}>
           <Text style={styles.subheading}>Monthly Product Stats:</Text>
-          {statistics.monthly_product_stats.map((item, index) => (
+          {statistics && statistics.monthly_product_stats && statistics.monthly_product_stats.map((item, index) => (
             <View key={index} style={styles.item}>
               <Text style={styles.itemName}>Product Name: {item.product__product_name}</Text>
-              <Text>Total Revenue: {item.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+              <Text>Total Revenue: {item.total_revenue ? item.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
               <Text>Total Sales: {item.total_sales}</Text>
             </View>
           ))}
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Icon name='heart' type='ionicon' size={20} color={'red'} />
-          <Text style={styles.highestRevenue}>Highest Revenue Product (Month): {statistics.highest_revenue_product_month.product__product_name}: {statistics.highest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+          <Text style={styles.highestRevenue}>Highest Revenue Product (Month): {statistics && statistics.highest_revenue_product_month ? statistics.highest_revenue_product_month.product__product_name : 'N/A'}: {statistics && statistics.highest_revenue_product_month ? statistics.highest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Icon name='warning' type='ionicon' size={20} color={'#967d29'} />
-          <Text style={styles.lowestRevenue}>Lowest Revenue Product (Month): {statistics.lowest_revenue_product_month.product__product_name}: {statistics.lowest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+          <Text style={styles.lowestRevenue}>Lowest Revenue Product (Month): {statistics && statistics.lowest_revenue_product_month ? statistics.lowest_revenue_product_month.product__product_name : 'N/A'}: {statistics && statistics.lowest_revenue_product_month ? statistics.lowest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         </View>
 
-        <Text style={styles.heading}>Quarterly Revenue: {statistics.quarterly_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+        <Text style={styles.heading}>Quarterly Revenue: {statistics && statistics.quarterly_revenue ? statistics.quarterly_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         <View style={styles.statsContainer}>
           <Text style={styles.subheading}>Quarterly Product Stats:</Text>
-          {statistics.quarterly_product_stats.map((item, index) => (
+          {statistics && statistics.quarterly_product_stats && statistics.quarterly_product_stats.map((item, index) => (
             <View key={index} style={styles.item}>
               <Text style={styles.itemName}>Product Name: {item.product__product_name}</Text>
-              <Text>Total Revenue: {item.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+              <Text>Total Revenue: {item.total_revenue ? item.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
               <Text>Total Sales: {item.total_sales}</Text>
             </View>
           ))}
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Icon name='heart' type='ionicon' size={20} color={'red'} />
-          <Text style={styles.highestRevenue}>Highest Revenue Product (Quarter): {statistics.highest_revenue_product_quarter.product__product_name}: {statistics.highest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+          <Text style={styles.highestRevenue}>Highest Revenue Product (Quarter): {statistics && statistics.highest_revenue_product_quarter ? statistics.highest_revenue_product_quarter.product__product_name : 'N/A'}: {statistics && statistics.highest_revenue_product_quarter ? statistics.highest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         </View>
 
         <View style={{ flexDirection: 'row' }}>
           <Icon name='warning' type='ionicon' size={20} color={'#967d29'} />
-          <Text style={styles.lowestRevenue}>Lowest Revenue Product (Quarter): {statistics.lowest_revenue_product_quarter.product__product_name}: {statistics.lowest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+          <Text style={styles.lowestRevenue}>Lowest Revenue Product (Quarter): {statistics && statistics.lowest_revenue_product_quarter ? statistics.lowest_revenue_product_quarter.product__product_name : 'N/A'}: {statistics && statistics.lowest_revenue_product_month ? statistics.lowest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         </View>
-        <Text style={styles.heading}>Yearly Revenue: {statistics.yearly_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+        <Text style={styles.heading}>Yearly Revenue: {statistics && statistics.yearly_revenue ? statistics.yearly_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         <View style={styles.statsContainer}>
           <Text style={styles.subheading}>Yearly Product Stats:</Text>
-          {statistics.yearly_product_stats.map((item, index) => (
+          {statistics && statistics.yearly_product_stats && statistics.yearly_product_stats.map((item, index) => (
             <View key={index} style={styles.item}>
               <Text style={styles.itemName}>Product Name: {item.product__product_name}</Text>
-              <Text>Total Revenue: {item.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+              <Text>Total Revenue: {item.total_revenue ? item.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
               <Text>Total Sales: {item.total_sales}</Text>
             </View>
           ))}
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Icon name='heart' type='ionicon' size={20} color={'red'} />
-          <Text style={styles.highestRevenue}>Highest Revenue Product (Year): {statistics.highest_revenue_product_year.product__product_name}: {statistics.highest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+          <Text style={styles.highestRevenue}>Highest Revenue Product (Year): {statistics && statistics.highest_revenue_product_year ? statistics.highest_revenue_product_year.product__product_name : 'N/A'}: {statistics && statistics.highest_revenue_product_year ? statistics.highest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Icon name='warning' type='ionicon' size={20} color={'#967d29'} />
-          <Text style={styles.lowestRevenue}>Lowest Revenue Product (Year): {statistics.lowest_revenue_product_year.product__product_name}: {statistics.lowest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
+          <Text style={styles.lowestRevenue}>Lowest Revenue Product (Year): {statistics && statistics.lowest_revenue_product_year ? statistics.lowest_revenue_product_year.product__product_name : 'N/A'}: {statistics && statistics.lowest_revenue_product_month ? statistics.lowest_revenue_product_month.total_revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'} VND</Text>
         </View>
-
       </View>
     </ScrollView>
   );

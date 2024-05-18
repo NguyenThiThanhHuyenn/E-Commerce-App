@@ -97,6 +97,11 @@ export default CartScreen = ({ navigation, route }) => {
                     // Chuyển hướng tới trang UserPage
                     navigation.navigate('UserPage');
 
+                    // Đặt lại trạng thái cart
+                    setOrderDetails([]);
+                    setPaymentMethod('cash_on_delivery');
+
+
                     // Cập nhật trạng thái của các đơn hàng đã thanh toán thành "completed"
                     await updateOrderStatus(orderDetail.order);
                 } else {
